@@ -9,8 +9,12 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ['airbnb-typescript', 'plugin:prettier/recommended'],
-  plugins: ['@typescript-eslint', 'prettier'],
+  extends: [
+    'airbnb-typescript',
+    'plugin:prettier/recommended',
+    'plugin:import/typescript',
+  ],
+  plugins: ['@typescript-eslint', 'import', 'prettier'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'error',
@@ -62,6 +66,7 @@ module.exports = {
     'import/prefer-default-export': 'warn',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-cycle': 'error',
+    "react/jsx-filename-extension": "off"
   },
   ignorePatterns: [
     '.eslintrc.cjs',
