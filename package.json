@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "generate:model": "npx prisma generate",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
     "prettier": "prettier --write \"src/**/*.ts\"",
