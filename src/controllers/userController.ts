@@ -7,7 +7,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
   res.json(users);
 };
 
-export const addUser = async (
+export const createUser = async (
   req: Request<{}, {}, CreateUserDto>,
   res: Response
 ): Promise<void> => {
