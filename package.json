@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev": "tsc && node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
     "generate:model": "npx prisma generate",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
