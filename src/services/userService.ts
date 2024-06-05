@@ -1,6 +1,6 @@
-import type { User } from '@/models/User/user';
-import prisma from '../prisma';
-import type { CreateUserDto } from '@/models/types/user';
+import type { User } from '@/models/User/user.ts';
+import prisma from '../prisma.ts';
+import type { CreateUserDto } from '@/models/types/user.d.ts';
 
 export const getAllUsers = async (): Promise<User[]> => prisma.user.findMany();
 

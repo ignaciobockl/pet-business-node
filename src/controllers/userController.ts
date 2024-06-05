@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as userService from '../services/userService';
-import type { CreateUserDto } from '@/models/types/user';
+import * as userService from '../services/userService.js';
+import type { CreateUserDto } from '@/models/types/user.d.ts';
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   const users = await userService.getAllUsers();

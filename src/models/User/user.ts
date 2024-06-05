@@ -1,4 +1,4 @@
-import { Person } from '../Person/person';
+import { Person } from '../Person/person.ts';
 
 import { UserRole } from '@prisma/client';
 
