@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc && node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
+    "dev": "tsc && node --watch --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
     "generate:model": "npx prisma generate",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
@@ -22,8 +22,7 @@
     "@prisma/client": "^5.14.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "helmet": "^7.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.1",

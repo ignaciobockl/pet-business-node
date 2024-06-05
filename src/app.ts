@@ -1,9 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
+
 // import helmet from 'helmet';
 import userRoutes from './routes/userRoutes.ts';
 import errorHandler from './middleware/errorHandler.ts';
+import { testConnection } from './prisma.ts';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,8 +15,6 @@ app.use(express.json());
 app.use(cors());
 // TODO: revisar documentacion
 // app.use(helmet());
-// TODO: revisar documentacion
-app.use(morgan('combined'));
 
 // Routes
 app.use('/api', userRoutes);
@@ -24,5 +23,6 @@ app.use('/api', userRoutes);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
+  testConnection();
   console.log(`Server is running on http://localhost:${PORT}`);
 });
