@@ -12,6 +12,7 @@
     "prepare": "husky",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "prettier:check": "prettier --check \"src/**/*.ts\"",
+    "prisma:migrate": "npx prisma migrate dev",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

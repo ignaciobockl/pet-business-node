@@ -1,5 +1,3 @@
-import { Person } from '../Person/person.ts';
-
 import { UserRole } from '@prisma/client';
 
 export interface User {
@@ -9,7 +7,7 @@ export interface User {
   oldPassword?: string | null;
   role: UserRole;
   mail: string;
-  person?: Person | null;
+  // person?: Person | null;
   createdAt: Date;
   updatedAt?: Date | null;
 }
