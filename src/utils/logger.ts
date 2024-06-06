@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const logFile = path.join(__dirname, '../../logs/app.log');
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const logFile = path.join(dirname, '../../logs/app.log');
 
 /**
  * Registra un mensaje en el archivo de registro y en la consola.
