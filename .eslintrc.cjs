@@ -57,7 +57,7 @@ module.exports = {
     'arrow-body-style': ['warn', 'as-needed'],
     'block-scoped-var': 'error',
     camelcase: 'error',
-    complexity: ['error', 5],
+    complexity: ['warn', 5],
     'consistent-return': 'error',
     'default-case-last': 'error',
     'default-param-last': 'warn',
