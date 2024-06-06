@@ -1,10 +1,10 @@
-import type { User } from '@/models/User/user.ts';
 import { v4 as uuidv4 } from 'uuid';
 import prisma from '../prisma.ts';
-import type { CreateUserDto } from '@/models/types/user.d.ts';
-import { encryptPassword } from '@/utils/encryption.ts';
 import { UserRole } from '@prisma/client';
-import log from '@/utils/logger.ts';
+import { User } from '../models/User/user.ts';
+import { CreateUserDto } from '../models/types/user.js';
+import log from '../utils/logger.ts';
+import { encryptPassword } from '../utils/encryption.ts';
 
 export const getAllUsers = async (): Promise<User[]> => prisma.user.findMany();
 
