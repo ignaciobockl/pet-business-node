@@ -7,11 +7,11 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc && node --watch --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
-    "generate:model": "npx prisma generate",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "prettier:check": "prettier --check \"src/**/*.ts\"",
+    "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,7 +30,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.2.1",
     "@commitlint/config-angular": "19.1.0",
-    "@types/bcryptjs": "^2.4.6",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/gradient-string": "^1.1.6",
