@@ -6,14 +6,21 @@ import { CreateUserDto } from '../models/types/user.js';
 import log from '../utils/logger.ts';
 import { encryptPassword } from '../utils/encryption.ts';
 
-export const getAllUsers = async (): Promise<User[]> => prisma.user.findMany();
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    return await prisma.user.findMany();
+  } catch (error) {
+    log('error', 'Error retrieving users', { error });
+    throw new Error('Unable to retrieve users');
+  }
+};
 
 export const createUser = async (userData: CreateUserDto): Promise<User> => {
   const encryptedPassword = await encryptPassword(userData.password);
   const uuid = uuidv4();
 
   if (userData.role === UserRole.ADMIN)
-    throw new Error('No se puede crear un usuario con el rol de administrador');
+    throw new Error('Cannot create a user with the administrator role');
 
   // TODO: verificar que el email no se encuentre registrado
 
