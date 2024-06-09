@@ -68,7 +68,7 @@
     "yarn": "please-use-pnpm"
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "jest",
       "eslint --fix",
       "prettier --write"
