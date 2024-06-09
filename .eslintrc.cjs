@@ -7,6 +7,7 @@ module.exports = {
   },
   env: {
     es2021: true,
+    jest: true,
     node: true,
   },
   extends: [
@@ -78,6 +79,7 @@ module.exports = {
     'build',
     'config',
     'dist',
+    'jest.config.ts',
     'node_modules',
   ],
 };

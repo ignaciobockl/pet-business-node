@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import * as userService from '../services/userService.js';
-import { CreateUserDto } from '../models/types/user.js';
-import log from '../utils/logger.ts';
-import handleResponse from '../utils/responseHandler.ts';
+import * as userService from '../../services/userService.ts';
+import { CreateUserDto } from '../../models/types/user.js';
+import log from '../../utils/logger.ts';
+import handleResponse from '../../utils/responseHandler.ts';
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
