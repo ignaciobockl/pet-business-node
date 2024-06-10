@@ -1,7 +1,10 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  collectCoverageFrom: ['!**/node_modules/**'],
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!**/node_modules/**'],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'json', 'clover'],
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'node'],
   preset: 'ts-jest',
