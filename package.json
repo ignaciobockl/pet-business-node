@@ -71,7 +71,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "jest",
+      "jest --passWithNoTests",
       "eslint --fix",
       "prettier --write"
     ],

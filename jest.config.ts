@@ -6,10 +6,10 @@ const config: Config = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'json', 'clover'],
   extensionsToTreatAsEsm: ['.ts'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'node'],
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
+  testMatch: ['**/src/**/*.spec.ts', '**/src/**/*.test.ts'],
   transform: {
     '^.+\\.ts$': ['ts-jest', { useESM: true }],
   },
