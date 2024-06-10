@@ -1,56 +1,49 @@
-/* eslint-disable no-console */
 import { execSync } from 'child_process';
 import gradient from 'gradient-string';
 
 const runPrepareScript = () => {
   try {
     console.clear();
-    process.stdout.write('\x1b[33m🔧 Running prepare script...\x1b[0m\n\n');
-
-    // Run husky install
-    process.stdout.write('⌛ (1/3) Installing Husky...');
-    execSync('pnpm exec husky init');
-    process.stdout.clearLine(0);
-    process.stdout.cursorTo(0);
-    process.stdout.write('✅ (1/3) Installed Husky\n');
-
-    // Install global dependencies
-    process.stdout.write('⌛ (2/3) Installing global dependencies...');
-    execSync(
-      'pnpm install npm-check-updates typescript prettier eslint @trivago/prettier-plugin-sort-imports -g --silent'
+    process.stdout.write(
+      '\x1b[33m Ejecutando script de preparación...\x1b[0m\n\n'
     );
+
+    process.stdout.write('⌛ (1/1) Instalando dependencias globales...');
+    execSync('pnpm install --global eslint prettier');
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
-    process.stdout.write('✅ (2/3) Installed global dependencies\n');
+    process.stdout.write('✅ (1/1) Dependencias globales instaladas\n');
 
-    // Check for dependency updates
-    process.stdout.write('⌛ (3/3) Checking for dependency updates...');
+    process.stdout.write(
+      '⌛ (2/2) Verificando actualizaciones de dependencias...'
+    );
     const updates = execSync('ncu');
     console.log(`\n${updates}`);
-    process.stdout.write('✅ (3/3) Checked for dependency updates\n');
+    process.stdout.write(
+      '✅ (2/2) Actualizaciones de dependencias verificadas\n'
+    );
 
-    // Delay 1s before printing success message
     setTimeout(() => {
       const successMessage = gradient(
         '#7aecdd',
         '#ffffff',
         '#f78df7'
-      )('Prepare script run successfully!');
+      )('Script de preparación ejecutado correctamente!');
 
       console.log(
         '\n═════════════════════════════════════════════════════════════'
       );
-      console.log(`\n\x1b[32m✨ ${successMessage} 🎉\x1b[0m\n`);
+      console.log(`\n\x1b[32m✨ ${successMessage} \x1b[0m\n`);
       console.log(
-        '═════════════════════════════════════════════════════════════\n'
+        '\n═════════════════════════════════════════════════════════════\n'
       );
 
       console.log(
-        '\x1b[33m❗ Make sure to check the above dependency updates and their implications, especially on \x1b[31mbreaking changes.'
+        '\x1b[33m❗ Asegúrate de revisar las actualizaciones de dependencias mencionadas anteriormente y sus implicaciones, especialmente en \x1b[31mcambios importantes.'
       );
-      console.log('\x1b[33m❗ To update them all, run \x1b[0mncu -u');
+      console.log('\x1b[33m❗ Para actualizarlas todas, ejecuta \x1b[0mncu -u');
       console.log(
-        '\x1b[33m❗ To only update one (or more) of them, run \x1b[0mncu [dependency_name(s)] -u\n'
+        '\x1b[33m❗ Para actualizar solo una (o más) de ellas, ejecuta \x1b[0mncu [nombre(s) de la dependencia] -u\n'
       );
     }, 1000);
   } catch (e: unknown) {
@@ -59,11 +52,11 @@ const runPrepareScript = () => {
     console.log(
       '\n═════════════════════════════════════════════════════════════'
     );
-    console.error(' \n\x1b[31mPrepare script EXITED 😥\x1b[0m\n');
+    console.error(' \n\x1b[31mScript de preparación FINALIZADO \x1b[0m\n');
     console.log(
       '═════════════════════════════════════════════════════════════\n'
     );
-    console.error(`Error log: ${error.message}`);
+    console.error(`Registro de error: ${error.message}`);
   }
 };
 
