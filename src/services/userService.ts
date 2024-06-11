@@ -1,10 +1,12 @@
 import prisma from '../prisma.ts';
 import { User } from '../models/User/user.ts';
-import { CreateUserDto } from '../models/types/user.js';
+// import { CreateUserDto } from '../models/types/user.js';
 import log from '../utils/logger.ts';
-import { encryptPassword } from '../utils/encryption.ts';
-import { UserRole as PrismaUserRole } from '@prisma/client';
+// import { encryptPassword } from '../utils/encryption.ts';
+// import { UserRole as PrismaUserRole } from '@prisma/client';
 
+// ! temporalmente se utiliza este disable
+// eslint-disable-next-line import/prefer-default-export
 export const getAllUsers = async (): Promise<User[]> => {
   try {
     return await prisma.user.findMany();
@@ -14,28 +16,29 @@ export const getAllUsers = async (): Promise<User[]> => {
   }
 };
 
-export const createUser = async (userData: CreateUserDto): Promise<User> => {
-  const encryptedPassword = await encryptPassword(userData.password);
+// TODO: en proceso
+// export const createUser = async (userData: CreateUserDto): Promise<User> => {
+//   const encryptedPassword = await encryptPassword(userData.password);
 
-  if (userData.role === PrismaUserRole.ADMIN)
-    throw new Error('Cannot create a user with the administrator role');
+//   if (userData.role === PrismaUserRole.ADMIN)
+//     throw new Error('Cannot create a user with the administrator role');
 
-  // TODO: verificar que el email no se encuentre registrado
+//   // TODO: verificar que el email no se encuentre registrado
 
-  try {
-    const user = await prisma.user.create({
-      data: {
-        ...userData,
-        password: encryptedPassword,
-        oldPassword: null,
-      },
-    });
-    return user;
-  } catch (error) {
-    log('error', 'Error creating user', { error });
-    throw error;
-  }
-};
+//   try {
+//     const user = await prisma.user.create({
+//       data: {
+//         ...userData,
+//         password: encryptedPassword,
+//         oldPassword: null,
+//       },
+//     });
+//     return user;
+//   } catch (error) {
+//     log('error', 'Error creating user', { error });
+//     throw error;
+//   }
+// };
 
 // TODO: login
 // export const loginUser = async (userName: string, password: string): Promise<User | null> => {
