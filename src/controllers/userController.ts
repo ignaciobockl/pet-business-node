@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import * as userService from '../services/userService.js';
 // import { CreateUserDto } from '../models/types/user.js';
-import log from '../utils/logger.ts';
 import handleResponse from '../utils/responseHandler.ts';
 
 // ! temporalmente se utiliza este disable
@@ -15,7 +14,6 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       status: 200,
     });
   } catch (error) {
-    log('error', 'Error trying to get users', { error });
     if (
       error instanceof Error &&
       error.message === 'Unable to retrieve users'
@@ -41,7 +39,6 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 //     )
 //       res.status(400).json({ error: error.message });
 //     else {
-//       log('error', 'Error creating user', { error });
 //       res.status(500).json({ error: 'Internal Server Error' });
 //     }
 //   }
