@@ -1,11 +1,11 @@
-import express from 'express';
 import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
-import userRoutes from './routes/userRoutes.ts';
 import errorHandler from './middleware/errorHandler.ts';
 import { testConnection } from './prisma.ts';
-import morgan from 'morgan';
-import helmet from 'helmet';
+import userRoutes from './routes/userRoutes.ts';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

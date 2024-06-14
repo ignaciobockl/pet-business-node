@@ -1,7 +1,8 @@
 import { UserRole } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
+
 import { User } from '../../models/User/user.ts';
 import { encryptPassword } from '../../utils/encryption.ts';
-import { v4 as uuidv4 } from 'uuid';
 
 const generateMockUsers = async (): Promise<User[]> => {
   const passwordHash = await encryptPassword('password123');

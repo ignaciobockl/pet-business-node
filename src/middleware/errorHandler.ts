@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 // TODO: sacar el enum de este archivo
 enum ErrorCode {

@@ -1,5 +1,5 @@
-import prisma from '../prisma.ts';
 import { User } from '../models/User/user.ts';
+import prisma from '../prisma.ts';
 // import { CreateUserDto } from '../models/types/user.js';
 // import { encryptPassword } from '../utils/encryption.ts';
 // import { UserRole as PrismaUserRole } from '@prisma/client';
