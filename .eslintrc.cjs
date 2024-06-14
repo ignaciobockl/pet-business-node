@@ -66,7 +66,8 @@ module.exports = {
     'import/prefer-default-export': 'warn',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-cycle': 'error',
-    "react/jsx-filename-extension": "off"
+    "react/jsx-filename-extension": "off",
+    "import/extensions": "off"
   },
   ignorePatterns: [
     '.eslintrc.cjs',
@@ -76,6 +77,7 @@ module.exports = {
     'commitlint.config.ts',
     'build',
     'config',
+    'coverage',
     'dist',
     'node_modules',
   ],

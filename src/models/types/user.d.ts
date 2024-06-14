@@ -1,4 +1,10 @@
+import { UserRole as PrismaUserRole } from '@prisma/client';
+
 export interface CreateUserDto {
-  email: string;
-  name: string;
+  userName: string;
+  password: string;
+  oldPassword?: string | null;
+  role: PrismaUserRole;
+  mail: string;
+  // person?: Person;
 }

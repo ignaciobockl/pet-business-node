@@ -1,14 +1,19 @@
 {
   "name": "pet-business-backend",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node --watch --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "prettier:check": "prettier --check \"src/**/*.ts\"",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,19 +21,22 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.14.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "19.2.1",
     "@commitlint/config-angular": "19.1.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/gradient-string": "^1.1.6",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.12",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "8.57.0",
