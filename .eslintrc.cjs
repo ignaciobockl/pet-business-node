@@ -15,7 +15,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:import/typescript',
   ],
-  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  plugins: ['@typescript-eslint', 'import', 'prettier', 'simple-import-sort'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'error',
@@ -67,8 +67,15 @@ module.exports = {
     'import/prefer-default-export': 'warn',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-cycle': 'error',
-    "react/jsx-filename-extension": "off",
-    "import/extensions": "off"
+    'react/jsx-filename-extension': 'off',
+    'import/extensions': 'off',
+
+    // eslint-plugin-simple-import-sort
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   ignorePatterns: [
     '.eslintrc.cjs',
