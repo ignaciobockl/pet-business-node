@@ -1,9 +1,10 @@
-build
-coverage
-dist
 node_modules
 prisma/migrations
 
 .env
 package-lock.json
 pnpm-lock.yaml
+
+build/
+coverage/
+dist/

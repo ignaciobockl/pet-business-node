@@ -5,14 +5,19 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes.ts';
 import errorHandler from './middleware/errorHandler.ts';
 import { testConnection } from './prisma.ts';
+import morgan from 'morgan';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json());
+
 // TODO: revisar documentacion
 app.use(cors());
+
+app.use(morgan('combined'));
+
 // TODO: revisar documentacion
 // app.use(helmet());
 
