@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.ts';
 import errorHandler from './middleware/errorHandler.ts';
 import { testConnection } from './prisma.ts';
 import morgan from 'morgan';
+import helmet from 'helmet';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,10 +17,9 @@ app.use(express.json());
 // TODO: revisar documentacion
 app.use(cors());
 
-app.use(morgan('combined'));
+app.use(helmet());
 
-// TODO: revisar documentacion
-// app.use(helmet());
+app.use(morgan('combined'));
 
 // Routes
 app.use('/api', userRoutes);
