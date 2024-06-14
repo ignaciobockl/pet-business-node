@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 
-// import helmet from 'helmet';
 import userRoutes from './routes/userRoutes.ts';
 import errorHandler from './middleware/errorHandler.ts';
 import { testConnection } from './prisma.ts';
@@ -17,6 +16,8 @@ app.use(express.json());
 // TODO: revisar documentacion
 app.use(cors());
 
+// ! esta es la configuracion por defecto
+// TODO: personalizar segun necesidades
 app.use(helmet());
 
 app.use(morgan('combined'));
