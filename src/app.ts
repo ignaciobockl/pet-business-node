@@ -24,15 +24,18 @@ if (process.env.NODE_ENV === 'production') {
 
 // Middlewares
 app.use(express.json());
-
 // TODO: revisar documentacion
 app.use(cors());
-
 // ! esta es la configuracion por defecto
 // TODO: personalizar segun necesidades
 app.use(helmet());
-
-app.use(morgan('combined'));
+app.use(
+  morgan('combined', {
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+);
 
 app.use((req, res, next) => {
   req.log = logger;
