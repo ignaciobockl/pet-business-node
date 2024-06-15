@@ -1,15 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
+import ErrorCode from '../enums/errorCodes.ts';
 import logger from '../utils/logger.ts';
-
-// TODO: sacar el enum de este archivo
-enum ErrorCode {
-  VALIDATION_ERROR = 400,
-  UNAUTHORIZED_ERROR = 401,
-  FORBIDDEN_ERROR = 403,
-  NOT_FOUND_ERROR = 404,
-  INTERNAL_SERVER_ERROR = 500,
-}
 
 /**
  * Helper function to get the appropriate HTTP status code for an error.
