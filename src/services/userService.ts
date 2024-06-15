@@ -1,4 +1,4 @@
-import { User } from '../models/User/user.ts';
+import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
 import logger from '../utils/logger.ts';
 // import { CreateUserDto } from '../models/types/user.js';
@@ -7,11 +7,19 @@ import logger from '../utils/logger.ts';
 
 // ! temporalmente se utiliza este disable
 // eslint-disable-next-line import/prefer-default-export
-export const getAllUsers = async (): Promise<User[]> => {
+export const getAllUsers = async (): Promise<UserResponse[]> => {
   try {
-    const users = await prisma.user.findMany();
+    const users: User[] = await prisma.user.findMany();
+    const usersResponse: UserResponse[] = users.map((user) => ({
+      id: user.id,
+      userName: user.userName,
+      role: user.role,
+      mail: user.mail,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    }));
     logger.info('Users retrieved successfully');
-    return users;
+    return usersResponse;
   } catch (error) {
     logger.error('Error retrieving users:', error);
     throw new Error('Unable to retrieve users');

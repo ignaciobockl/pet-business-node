@@ -11,3 +11,12 @@ export interface User {
   createdAt: Date;
   updatedAt?: Date | null;
 }
+
+export interface UserResponse {
+  id: string;
+  userName: string;
+  role: PrismaUserRole;
+  mail: string;
+  createdAt: Date;
+  updatedAt?: Date | null;
+}
