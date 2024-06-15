@@ -97,4 +97,17 @@ describe('User Controller - getUsers', () => {
       status: 404,
     });
   });
+
+  it('should handle unknown error with status 500', async () => {
+    const err = new Error('Unknown error');
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Unknown error',
+      status: 500,
+    });
+  });
 });
