@@ -31,4 +31,18 @@ describe('handleResponse', () => {
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith(responseData);
   });
+
+  it('should send a JSON response without data if not provided', () => {
+    const responseData: ResponseData = {
+      message: 'Example message',
+      status: 400,
+    };
+
+    handleResponse(res, responseData);
+
+    expect(res.status).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(responseData.status);
+    expect(res.json).toHaveBeenCalledTimes(1);
+    expect(res.json).toHaveBeenCalledWith(responseData);
+  });
 });
