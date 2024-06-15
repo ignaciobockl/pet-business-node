@@ -1,13 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 
+import logger from './utils/logger.ts';
+
 const prisma = new PrismaClient();
 
 export const testConnection = async (): Promise<void> => {
   try {
     await prisma.$connect();
-    console.log('Conexión a PostgreSQL exitosa');
+    logger.info('Conexión a PostgreSQL exitosa');
   } catch (error) {
-    console.error('Error al conectar a PostgreSQL:', error);
+    logger.error('Error al conectar a PostgreSQL:', error);
   }
 };
 

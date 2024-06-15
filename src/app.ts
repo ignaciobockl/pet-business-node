@@ -52,7 +52,6 @@ process.on('uncaughtException', (err) => {
   logger.fatal(err, 'Excepción no controlada');
   process.exit(1);
 });
-
 process.on('unhandledRejection', (reason, promise) => {
   logger.fatal({ reason, promise }, 'Promesa no manejada');
   process.exit(1);
@@ -60,6 +59,10 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  testConnection();
-  logger.info(`Server is running on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV === 'production') {
+    logger.info(`Servidor corriendo en modo producción en el puerto ${PORT}`);
+  } else {
+    testConnection();
+    logger.debug(`Servidor corriendo en modo desarrollo en el puerto ${PORT}`);
+  }
 });
