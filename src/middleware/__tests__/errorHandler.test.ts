@@ -55,4 +55,18 @@ describe('User Controller - getUsers', () => {
       status: 400,
     });
   });
+
+  it('should handle unauthorized error with status 401', async () => {
+    const err = new Error('Unauthorized error');
+    err.name = 'UnauthorizedError';
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Unauthorized error',
+      status: 401,
+    });
+  });
 });
