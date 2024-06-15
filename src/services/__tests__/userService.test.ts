@@ -38,4 +38,16 @@ describe('getAllUsers', () => {
     expect(prisma.user.findMany).toHaveBeenCalledTimes(1);
     expect(logger.info).toHaveBeenCalledWith('Users retrieved successfully');
   });
+
+  it('should throw an error if users cannot be retrieved', async () => {
+    const errorMessage = 'Unable to retrieve users';
+
+    (prisma.user.findMany as jest.Mock).mockRejectedValue(
+      new Error(errorMessage)
+    );
+
+    await expect(getAllUsers()).rejects.toThrow(errorMessage);
+
+    expect(logger.error).toHaveBeenCalled();
+  });
 });
