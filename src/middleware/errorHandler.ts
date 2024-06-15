@@ -1,29 +1,26 @@
 import { NextFunction, Request, Response } from 'express';
 
-import logger from '../utils/logger.ts';
 import ErrorCode from '../enums/errorCodes.ts';
+import logger from '../utils/logger.ts';
+
+/**
+ * Mapping of error names to HTTP status codes.
+ */
+const errorNameToStatusCode: Record<string, number> = {
+  ValidationError: ErrorCode.VALIDATION_ERROR,
+  UnauthorizedError: ErrorCode.UNAUTHORIZED_ERROR,
+  ForbiddenError: ErrorCode.FORBIDDEN_ERROR,
+  NotFoundError: ErrorCode.NOT_FOUND_ERROR,
+  ServiceUnavailableError: ErrorCode.SERVICE_UNAVAILABLE_ERROR,
+};
 
 /**
  * Helper function to get the appropriate HTTP status code for an error.
  * @param {Error} err The error for which to get the status code.
  * @returns {number} The HTTP status code.
  */
-const getStatusCode = (err: Error): number => {
-  switch (err.name) {
-    case 'ValidationError':
-      return ErrorCode.VALIDATION_ERROR;
-    case 'UnauthorizedError':
-      return ErrorCode.UNAUTHORIZED_ERROR;
-    case 'ForbiddenError':
-      return ErrorCode.FORBIDDEN_ERROR;
-    case 'NotFoundError':
-      return ErrorCode.NOT_FOUND_ERROR;
-    case 'ServiceUnavailableError':
-      return ErrorCode.SERVICE_UNAVAILABLE_ERROR;
-    default:
-      return ErrorCode.INTERNAL_SERVER_ERROR;
-  }
-};
+const getStatusCode = (err: Error): number =>
+  errorNameToStatusCode[err.name] || ErrorCode.INTERNAL_SERVER_ERROR;
 
 /**
  * Helper function to get the appropriate error message for an error.
