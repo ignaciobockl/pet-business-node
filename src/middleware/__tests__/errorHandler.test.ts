@@ -69,4 +69,18 @@ describe('User Controller - getUsers', () => {
       status: 401,
     });
   });
+
+  it('should handle forbidden error with status 403', async () => {
+    const err = new Error('Forbidden error');
+    err.name = 'ForbiddenError';
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Forbidden error',
+      status: 403,
+    });
+  });
 });
