@@ -33,7 +33,6 @@ const createLogger = (): Logger => {
 
 /**
  * The logger instance used throughout the application.
- * @type {Logger}
  */
 const logger = createLogger();
 
