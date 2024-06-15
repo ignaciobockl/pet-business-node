@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
+import logger from '../utils/logger.ts';
+
 // TODO: sacar el enum de este archivo
 enum ErrorCode {
   VALIDATION_ERROR = 400,
@@ -53,7 +55,7 @@ const errorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ): void => {
-  console.error(err);
+  logger.error(err);
 
   const statusCode = getStatusCode(err);
   const errorMessage = getErrorMessage(err);

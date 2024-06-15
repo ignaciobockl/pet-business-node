@@ -1,5 +1,6 @@
 import { User } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
+import logger from '../utils/logger.ts';
 // import { CreateUserDto } from '../models/types/user.js';
 // import { encryptPassword } from '../utils/encryption.ts';
 // import { UserRole as PrismaUserRole } from '@prisma/client';
@@ -8,8 +9,11 @@ import prisma from '../prisma.ts';
 // eslint-disable-next-line import/prefer-default-export
 export const getAllUsers = async (): Promise<User[]> => {
   try {
-    return await prisma.user.findMany();
+    const users = await prisma.user.findMany();
+    logger.info('Users retrieved successfully');
+    return users;
   } catch (error) {
+    logger.error('Error retrieving users:', error);
     throw new Error('Unable to retrieve users');
   }
 };

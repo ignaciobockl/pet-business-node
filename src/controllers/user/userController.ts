@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 
 import * as userService from '../../services/userService.ts';
+import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
 // ! temporalmente se utiliza este disable
 // eslint-disable-next-line import/prefer-default-export
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  logger.info(`Incoming request: ${req.method} ${req.url}`);
   try {
     const users = await userService.getAllUsers();
     handleResponse(res, {
@@ -14,6 +16,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       status: 200,
     });
   } catch (error) {
+    logger.error('Error retrieving users:', error);
     if (
       error instanceof Error &&
       error.message === 'Unable to retrieve users'
