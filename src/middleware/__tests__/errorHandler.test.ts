@@ -83,4 +83,18 @@ describe('User Controller - getUsers', () => {
       status: 403,
     });
   });
+
+  it('should handle not found error with status 404', async () => {
+    const err = new Error('Not found error');
+    err.name = 'NotFoundError';
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Not found error',
+      status: 404,
+    });
+  });
 });
