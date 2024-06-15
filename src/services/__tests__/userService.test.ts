@@ -12,6 +12,10 @@ jest.mock('../../prisma.ts', () => ({
 jest.mock('../../utils/logger.ts');
 
 describe('getAllUsers', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should return all users', async () => {
     const mockUsers: User[] = await generateMockUsers();
 
@@ -49,5 +53,15 @@ describe('getAllUsers', () => {
     await expect(getAllUsers()).rejects.toThrow(errorMessage);
 
     expect(logger.error).toHaveBeenCalled();
+  });
+
+  it('should return an empty array if no users are found', async () => {
+    (prisma.user.findMany as jest.Mock).mockResolvedValue([]);
+
+    const result = await getAllUsers();
+
+    expect(result).toEqual([]);
+    expect(prisma.user.findMany).toHaveBeenCalledTimes(1);
+    expect(logger.info).toHaveBeenCalledWith('Users retrieved successfully');
   });
 });
