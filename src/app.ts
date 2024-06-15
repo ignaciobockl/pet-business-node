@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import errorHandler from './middleware/errorHandler.ts';
 import { testConnection } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
+import handleProcessErrors from './utils/exceptionHandler.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
@@ -48,14 +49,7 @@ app.use('/api', userRoutes);
 app.use(errorHandler);
 
 // Handling unhandled errors and promise rejections
-process.on('uncaughtException', (err) => {
-  logger.fatal(err, 'Excepción no controlada');
-  process.exit(1);
-});
-process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal({ reason, promise }, 'Promesa no manejada');
-  process.exit(1);
-});
+handleProcessErrors();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
