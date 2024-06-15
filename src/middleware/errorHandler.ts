@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-import ErrorCode from '../enums/errorCodes.ts';
 import logger from '../utils/logger.ts';
+import ErrorCode from '../enums/errorCodes.ts';
 
 /**
  * Helper function to get the appropriate HTTP status code for an error.
@@ -18,6 +18,8 @@ const getStatusCode = (err: Error): number => {
       return ErrorCode.FORBIDDEN_ERROR;
     case 'NotFoundError':
       return ErrorCode.NOT_FOUND_ERROR;
+    case 'ServiceUnavailableError':
+      return ErrorCode.SERVICE_UNAVAILABLE_ERROR;
     default:
       return ErrorCode.INTERNAL_SERVER_ERROR;
   }
