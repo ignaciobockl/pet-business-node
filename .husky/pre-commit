@@ -1,1 +1,1 @@
-tsc --pretty && pnpm lint-staged --allow-empty
+tsc --noEmit --pretty && pnpm lint-staged --allow-empty
