@@ -41,4 +41,18 @@ describe('User Controller - getUsers', () => {
       status: 200,
     });
   });
+
+  it('should handle validation error with status 400', async () => {
+    const err = new Error('Validation error');
+    err.name = 'ValidationError';
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Validation error',
+      status: 400,
+    });
+  });
 });

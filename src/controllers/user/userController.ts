@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { getStatusCode } from '../../middleware/errorHandler.ts';
 import * as userService from '../../services/userService.ts';
 import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
@@ -17,13 +18,19 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     logger.error('Error retrieving users:', error);
-    if (
-      error instanceof Error &&
-      error.message === 'Unable to retrieve users'
-    ) {
-      handleResponse(res, { message: error.message, status: 400 });
+    if (error instanceof Error) {
+      const statusCode = getStatusCode(error); // Obtiene el código de estado adecuado para el error
+      handleResponse(res, {
+        data: null,
+        message: error.message,
+        status: statusCode,
+      });
     } else {
-      handleResponse(res, { message: 'Internal Server Error', status: 500 });
+      handleResponse(res, {
+        data: null,
+        message: 'Internal Server Error',
+        status: 500,
+      });
     }
   }
 };

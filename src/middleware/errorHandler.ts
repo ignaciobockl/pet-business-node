@@ -19,7 +19,7 @@ const errorNameToStatusCode: Record<string, number> = {
  * @param {Error} err The error for which to get the status code.
  * @returns {number} The HTTP status code.
  */
-const getStatusCode = (err: Error): number =>
+export const getStatusCode = (err: Error): number =>
   errorNameToStatusCode[err.name] || ErrorCode.INTERNAL_SERVER_ERROR;
 
 /**
