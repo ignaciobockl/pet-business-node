@@ -110,4 +110,18 @@ describe('User Controller - getUsers', () => {
       status: 500,
     });
   });
+
+  it('should handle service unavailable error with status 503', async () => {
+    const err = new Error('Service unavailable error');
+    err.name = 'ServiceUnavailableError'; // Set the error name to match the expected name
+    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+
+    await getUsers(req as Request, mockRes as Response);
+
+    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+      data: null,
+      message: 'Service unavailable error',
+      status: 503,
+    });
+  });
 });
