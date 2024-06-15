@@ -12,7 +12,6 @@ import userRoutes from './routes/userRoutes.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({
@@ -48,6 +47,18 @@ app.use('/api', userRoutes);
 // Error handling middleware
 app.use(errorHandler);
 
+// Handling unhandled errors and promise rejections
+process.on('uncaughtException', (err) => {
+  logger.fatal(err, 'Excepción no controlada');
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.fatal({ reason, promise }, 'Promesa no manejada');
+  process.exit(1);
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   testConnection();
   logger.info(`Server is running on http://localhost:${PORT}`);
