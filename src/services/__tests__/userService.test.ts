@@ -64,4 +64,16 @@ describe('getAllUsers', () => {
     expect(prisma.user.findMany).toHaveBeenCalledTimes(1);
     expect(logger.info).toHaveBeenCalledWith('Users retrieved successfully');
   });
+
+  // it('should handle incorrect data format gracefully', async () => {
+  //   const malformedUsers = [{ id: 1, name: 'John Doe' }];
+
+  //   (prisma.user.findMany as jest.Mock).mockResolvedValue(malformedUsers);
+
+  //   await expect(getAllUsers()).rejects.toThrowError(
+  //     'Unable to retrieve users'
+  //   );
+
+  //   expect(logger.error).toHaveBeenCalled();
+  // });
 });
