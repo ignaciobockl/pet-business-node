@@ -1,4 +1,4 @@
-import { pino } from 'pino';
+import { Logger, pino } from 'pino';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -14,6 +14,6 @@ const logger = pino({
           ignore: 'pid,hostname',
         },
       },
-});
+}) as Logger;
 
 export default logger;
