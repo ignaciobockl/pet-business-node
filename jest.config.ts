@@ -8,6 +8,7 @@ const config: Config = {
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   preset: 'ts-jest',
+  setupFilesAfterEnv: ['<rootDir>/src/config/setupTests.ts'],
   testEnvironment: 'node',
   testMatch: ['**/src/**/*.spec.ts', '**/src/**/*.test.ts'],
   transform: {
