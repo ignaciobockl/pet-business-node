@@ -26,6 +26,7 @@ const generateMockUsers = async (): Promise<User[]> => {
       role: UserRole.EMPLOYEE,
       mail: 'jane@example.com',
       createdAt: new Date(),
+      updatedAt: null,
     },
   ];
 
