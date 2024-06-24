@@ -1,6 +1,7 @@
 import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
 import { UserSchema } from '../schemas/userSchema.ts';
+import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
 // import { CreateUserDto } from '../models/types/user.js';
 // import { encryptPassword } from '../utils/encryption.ts';
@@ -17,7 +18,9 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
         UserSchema.parse(user);
       } catch (validationError) {
         logger.error('Validation error for user:', { user, validationError });
-        throw new Error(`Validation error for user with ID ${user.id}`);
+        throw createValidationError(
+          `Validation error for user with ID ${user.id}`
+        );
       }
     });
 
@@ -33,6 +36,9 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
     return usersResponse;
   } catch (error) {
     logger.error('Error retrieving users:', error);
+    if (error instanceof Error && error.name === 'ValidationError') {
+      throw error;
+    }
     throw new Error('Unable to retrieve users');
   }
 };
