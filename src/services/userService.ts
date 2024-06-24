@@ -12,7 +12,6 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
 
-    // ! descomentar cuando se solucione el error de entorno
     users.forEach((user) => {
       try {
         UserSchema.parse(user);

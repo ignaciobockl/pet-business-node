@@ -65,15 +65,37 @@ describe('getAllUsers', () => {
     expect(logger.info).toHaveBeenCalledWith('Users retrieved successfully');
   });
 
-  // it('should handle incorrect data format gracefully', async () => {
-  //   const malformedUsers = [{ id: 1, name: 'John Doe' }];
+  it('should handle incorrect data format gracefully', async () => {
+    const malformedUsers = [{ id: 1, name: 'John Doe' }];
 
-  //   (prisma.user.findMany as jest.Mock).mockResolvedValue(malformedUsers);
+    (prisma.user.findMany as jest.Mock).mockResolvedValue(malformedUsers);
 
-  //   await expect(getAllUsers()).rejects.toThrowError(
-  //     'Unable to retrieve users'
-  //   );
+    await expect(getAllUsers()).rejects.toThrowError(
+      'Unable to retrieve users'
+    );
 
-  //   expect(logger.error).toHaveBeenCalled();
-  // });
+    expect(logger.error).toHaveBeenCalled();
+  });
+
+  it('should throw a validation error if user data is invalid', async () => {
+    const invalidUser = {
+      id: 'invalid-id',
+      userName: 'John Doe',
+      mail: 'not-an-email',
+      role: 'USER',
+      createdAt: new Date('2024-06-24T21:07:05.417Z'),
+      updatedAt: new Date('2024-06-24T21:07:05.417Z'),
+    };
+
+    (prisma.user.findMany as jest.Mock).mockResolvedValue([invalidUser]);
+
+    await expect(getAllUsers()).rejects.toThrowError(
+      `Validation error for user with ID ${invalidUser.id}`
+    );
+
+    expect(logger.error).toHaveBeenCalledWith(
+      'Validation error for user:',
+      expect.any(Object)
+    );
+  });
 });
