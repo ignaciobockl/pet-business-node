@@ -7,6 +7,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc && node --watch --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
+    "jest": "jest --watch --detectOpenHandles",
+    "jest:all": "jest --watchAll",
+    "jest:coverage": "jest --coverage",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
     "prepare": "husky",
     "prepare-project": "node --loader ts-node/esm config/prepare-project.ts",
@@ -15,9 +18,6 @@
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "start": "node dist/app.js",
-    "test": "jest --watch --detectOpenHandles",
-    "test:all": "jest --watchAll",
-    "test:coverage": "jest --coverage",
     "update": "ncu",
     "update:check": "ncu --interactive --format group"
   },
