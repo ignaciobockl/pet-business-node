@@ -7,7 +7,7 @@ const runPrepareScript = () => {
     process.stdout.write('\x1b[33m🔧 Running prepare script...\x1b[0m\n\n');
 
     process.stdout.write('⌛ (1/2) Installing global dependencies...');
-    execSync('pnpm install --global eslint prettier');
+    execSync('pnpm add --global eslint prettier ncu');
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
 

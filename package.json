@@ -8,7 +8,7 @@
     "build": "tsc",
     "dev": "tsc && node --watch --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings src/app.ts",
     "lint": "npx tsx ./config/pre-build.ts --ignore-build",
-    "prepare": "husky",
+    "prepare": "husky install && ts-node config/prepare-project.ts",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "prettier:check": "prettier --check \"src/**/*.ts\"",
     "prisma:generate": "npx prisma generate",
