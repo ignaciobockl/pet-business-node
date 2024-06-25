@@ -17,7 +17,9 @@
     "start": "node dist/app.js",
     "test": "jest --watch --detectOpenHandles",
     "test:all": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "update": "ncu",
+    "update:check": "ncu --interactive --format group"
   },
   "keywords": [],
   "author": "Ignacio Bockl",
