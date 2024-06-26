@@ -29,6 +29,23 @@ describe('Password Utility Functions', () => {
         'Password does not meet minimum requirements'
       );
     });
+    it('should encrypt a password at the maximum length limit', async () => {
+      // 20 character password
+      const maxLengthPassword = 'ValidPassw0rd!123456';
+
+      // Mock bcrypt.hash to return a predefined hashed password
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword123');
+
+      const result = await encryptPassword(maxLengthPassword);
+
+      // Ensure bcrypt.hash was called with the correct arguments
+      expect(bcrypt.hash).toHaveBeenCalledWith(
+        maxLengthPassword,
+        expect.any(Number)
+      );
+      // Ensure the result from encryptPassword is the mocked hashed password
+      expect(result).toBe('hashedPassword123');
+    });
   });
 
   describe('comparePassword', () => {
