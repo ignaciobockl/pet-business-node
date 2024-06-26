@@ -14,11 +14,30 @@ export const UserSchema = z.object({
   updatedAt: z.date().nullable(),
 });
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
+
 export const CreateUserSchema = z.object({
-  userName: z.string().min(3),
-  password: z.string().min(8),
+  userName: z
+    // eslint-disable-next-line camelcase
+    .string({ required_error: 'Username is required' })
+    .min(6, {
+      message: 'Username must be at least 6 characters long',
+    })
+    .max(16, {
+      message: 'Username must be at most 16 characters long',
+    }),
+  password: z
+    // eslint-disable-next-line camelcase
+    .string({ required_error: 'Password is required' })
+    .regex(passwordRegex, {
+      message:
+        'Password must be between 8 and 20 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+    }),
   role: UserRoleSchema,
-  mail: z.string().email(),
+  mail: z
+    // eslint-disable-next-line camelcase
+    .string({ required_error: 'Email address is required' })
+    .email({ message: 'The entered email is invalid' }),
 });
 
 export type User = z.infer<typeof UserSchema>;
