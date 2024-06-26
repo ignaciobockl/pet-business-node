@@ -42,5 +42,15 @@ describe('Password Utility Functions', () => {
       const result = await comparePassword(plainPassword, hashedPassword);
       expect(result).toBe(true);
     });
+    it('should return false for non-matching passwords', async () => {
+      const plainPassword = 'TestPassword123!';
+      const hashedPassword = await encryptPassword(plainPassword);
+
+      // Mock bcrypt.compare to simulate password comparison
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+
+      const result = await comparePassword('WrongPassword123!', hashedPassword);
+      expect(result).toBe(false);
+    });
   });
 });
