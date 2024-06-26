@@ -3,7 +3,7 @@ import { UserRole as PrismaUserRole } from '@prisma/client';
 import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
-import { UserSchema } from '../schemas/userSchema.ts';
+import { CreateUserSchema, UserSchema } from '../schemas/userSchema.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
 
@@ -41,36 +41,49 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
   }
 };
 
+// eslint-disable-next-line complexity
 export const createUser = async (userData: CreateUserDto): Promise<User> => {
   // const encryptedPassword = await encryptPassword(userData.password);
 
-  if (userData.role === PrismaUserRole.ADMIN) {
-    logger.error('Cannot create a user with the administrator role');
-    throw new Error('Cannot create a user with the administrator role');
-  }
-
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      mail: userData.mail,
-    },
-  });
-
-  if (existingUser) {
-    logger.error(`User with email ${userData.mail} already exists`);
-    throw new Error(`User with email ${userData.mail} already exists`);
-  }
-
   try {
-    const user = await prisma.user.create({
-      data: {
-        ...userData,
-        // password: encryptedPassword,
+    // Validate user data using Zod
+    CreateUserSchema.parse(userData);
+
+    if (userData.role === PrismaUserRole.ADMIN) {
+      logger.error('Cannot create a user with the administrator role');
+      throw new Error('Cannot create a user with the administrator role');
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        mail: userData.mail,
       },
     });
-    return user;
-  } catch (error) {
-    logger.error('Error creating user:', error);
-    throw error;
+
+    if (existingUser) {
+      logger.error(`User with email ${userData.mail} already exists`);
+      throw new Error(`User with email ${userData.mail} already exists`);
+    }
+
+    try {
+      const user = await prisma.user.create({
+        data: {
+          ...userData,
+          // password: encryptedPassword,
+        },
+      });
+      return user;
+    } catch (error) {
+      logger.error('Error creating user:', error);
+      throw error;
+    }
+  } catch (validationError) {
+    logger.error('Validation error creating user:', validationError);
+    const errorMessage = 'Validation error occurred';
+    throw createValidationError(
+      `Validation error creating user: ${errorMessage}`,
+      validationError
+    );
   }
 };
 
