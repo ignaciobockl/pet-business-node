@@ -4,6 +4,7 @@ import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
 import { CreateUserSchema, UserSchema } from '../schemas/userSchema.ts';
+import { encryptPassword } from '../utils/encryption.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
 
@@ -73,11 +74,13 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
       throw new Error(errorMessage);
     }
 
+    const hashedPassword = await encryptPassword(userData.password);
+
     try {
       const user = await prisma.user.create({
         data: {
           ...userData,
-          // password: encryptedPassword,
+          password: hashedPassword,
         },
       });
       logger.info('User created successfully', { user });
