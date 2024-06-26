@@ -83,7 +83,11 @@ describe('Password Utility Functions', () => {
   describe('comparePassword', () => {
     it('should return true for matching passwords', async () => {
       const plainPassword = 'TestPassword123!';
-      const hashedPassword = await encryptPassword(plainPassword);
+      const hashedPassword = 'hashedPassword123';
+
+      // Mock bcrypt.hash to return a predefined hashed password
+      (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
+      await encryptPassword(plainPassword);
 
       // Mock bcrypt.compare to simulate password comparison
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
