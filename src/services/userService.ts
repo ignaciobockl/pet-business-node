@@ -1,15 +1,44 @@
+import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
-import { User } from '../models/User/user.ts';
+import { UserSchema } from '../schemas/userSchema.ts';
+import createValidationError from '../utils/errors.ts';
+import logger from '../utils/logger.ts';
 // import { CreateUserDto } from '../models/types/user.js';
 // import { encryptPassword } from '../utils/encryption.ts';
 // import { UserRole as PrismaUserRole } from '@prisma/client';
 
 // ! temporalmente se utiliza este disable
 // eslint-disable-next-line import/prefer-default-export
-export const getAllUsers = async (): Promise<User[]> => {
+export const getAllUsers = async (): Promise<UserResponse[]> => {
   try {
-    return await prisma.user.findMany();
+    const users: User[] = await prisma.user.findMany();
+
+    users.forEach((user) => {
+      try {
+        UserSchema.parse(user);
+      } catch (validationError) {
+        logger.error('Validation error for user:', { user, validationError });
+        throw createValidationError(
+          `Validation error for user with ID ${user.id}`
+        );
+      }
+    });
+
+    const usersResponse: UserResponse[] = users.map((user) => ({
+      id: user.id,
+      userName: user.userName,
+      role: user.role,
+      mail: user.mail,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt || null,
+    }));
+    logger.info('Users retrieved successfully');
+    return usersResponse;
   } catch (error) {
+    logger.error('Error retrieving users:', error);
+    if (error instanceof Error && error.name === 'ValidationError') {
+      throw error;
+    }
     throw new Error('Unable to retrieve users');
   }
 };

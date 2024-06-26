@@ -1,10 +1,13 @@
 node_modules
+prisma/migrations
+
+.env
+.env.development
+.env.production
+.env.test
 
 package-lock.json
 pnpm-lock.yaml
-
-.env
-prisma/migrations
 
 build/
 coverage/

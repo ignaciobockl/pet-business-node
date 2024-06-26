@@ -1,15 +1,6 @@
 import { Response } from 'express';
 
-/**
- * Interface for defining the structure of response data.
- *
- * @template T - The type of the data being returned.
- */
-interface ResponseData<T = unknown> {
-  data?: T;
-  message: string;
-  status: number;
-}
+import { ResponseData } from './interface/index.js';
 
 /**
  * Sends a JSON response with the provided data, message, and status code.

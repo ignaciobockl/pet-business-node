@@ -102,7 +102,8 @@ const runBuildCommand = () => {
   // Copy .env.${env} to .env.production (except in production mode)
   if (env !== 'production') copyEnv(env!);
 
-  const buildCommand = `next build`;
+  // TODO: revisar
+  const buildCommand = `pnpm build`;
 
   console.log('\x1b[33m🚀 Running build command...\x1b[0m');
   if (args) console.log(`\x1b[33m🔧 Args are: \x1b[0m${args}`);
