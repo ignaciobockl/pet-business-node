@@ -14,4 +14,12 @@ export const UserSchema = z.object({
   updatedAt: z.date().nullable(),
 });
 
+export const CreateUserSchema = z.object({
+  userName: z.string().min(3),
+  password: z.string().min(8),
+  role: UserRoleSchema,
+  mail: z.string().email(),
+});
+
 export type User = z.infer<typeof UserSchema>;
+export type CreateUserDto = z.infer<typeof CreateUserSchema>;
