@@ -21,5 +21,13 @@ describe('Password Utility Functions', () => {
       // Ensure the result from encryptPassword is the mocked hashed password
       expect(result).toBe(hashedPassword);
     });
+
+    it('should throw an error for an invalid password', async () => {
+      const invalidPassword = 'weakpwd'; // does not meet complexity requirements
+
+      await expect(encryptPassword(invalidPassword)).rejects.toThrow(
+        'Password does not meet minimum requirements'
+      );
+    });
   });
 });
