@@ -1,14 +1,12 @@
+import { UserRole as PrismaUserRole } from '@prisma/client';
+
+import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
 import { UserSchema } from '../schemas/userSchema.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
-// import { CreateUserDto } from '../models/types/user.js';
-// import { encryptPassword } from '../utils/encryption.ts';
-// import { UserRole as PrismaUserRole } from '@prisma/client';
 
-// ! temporalmente se utiliza este disable
-// eslint-disable-next-line import/prefer-default-export
 export const getAllUsers = async (): Promise<UserResponse[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
@@ -43,28 +41,38 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
   }
 };
 
-// TODO: en proceso
-// export const createUser = async (userData: CreateUserDto): Promise<User> => {
-//   const encryptedPassword = await encryptPassword(userData.password);
+export const createUser = async (userData: CreateUserDto): Promise<User> => {
+  // const encryptedPassword = await encryptPassword(userData.password);
 
-//   if (userData.role === PrismaUserRole.ADMIN)
-//     throw new Error('Cannot create a user with the administrator role');
+  if (userData.role === PrismaUserRole.ADMIN) {
+    logger.error('Cannot create a user with the administrator role');
+    throw new Error('Cannot create a user with the administrator role');
+  }
 
-//   // TODO: verificar que el email no se encuentre registrado
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      mail: userData.mail,
+    },
+  });
 
-//   try {
-//     const user = await prisma.user.create({
-//       data: {
-//         ...userData,
-//         password: encryptedPassword,
-//         oldPassword: null,
-//       },
-//     });
-//     return user;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+  if (existingUser) {
+    logger.error(`User with email ${userData.mail} already exists`);
+    throw new Error(`User with email ${userData.mail} already exists`);
+  }
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        ...userData,
+        // password: encryptedPassword,
+      },
+    });
+    return user;
+  } catch (error) {
+    logger.error('Error creating user:', error);
+    throw error;
+  }
+};
 
 // TODO: login
 // export const loginUser = async (userName: string, password: string): Promise<User | null> => {
