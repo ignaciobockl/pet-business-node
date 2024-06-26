@@ -23,7 +23,7 @@ describe('Password Utility Functions', () => {
     });
 
     it('should throw an error for an invalid password', async () => {
-      const invalidPassword = 'weakpwd'; // does not meet complexity requirements
+      const invalidPassword = 'weakpwd';
 
       await expect(encryptPassword(invalidPassword)).rejects.toThrow(
         'Password does not meet minimum requirements'
@@ -51,6 +51,19 @@ describe('Password Utility Functions', () => {
 
       const result = await comparePassword('WrongPassword123!', hashedPassword);
       expect(result).toBe(false);
+    });
+    it('should throw an error when comparison fails', async () => {
+      const plainPassword = 'TestPassword123!';
+      const hashedPassword = 'hashedPassword123';
+
+      // Mock bcrypt.compare to throw an error
+      (bcrypt.compare as jest.Mock).mockRejectedValue(
+        new Error('Comparison error')
+      );
+
+      await expect(
+        comparePassword(plainPassword, hashedPassword)
+      ).rejects.toThrow('Error comparing passwords');
     });
   });
 });
