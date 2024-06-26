@@ -54,9 +54,13 @@ handleProcessErrors();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   if (process.env.NODE_ENV === 'production') {
-    logger.info(`Servidor corriendo en modo producción en el puerto ${PORT}`);
+    logger.info(
+      `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
+    );
   } else {
     testConnection();
-    logger.debug(`Servidor corriendo en modo desarrollo en el puerto ${PORT}`);
+    logger.debug(
+      `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
+    );
   }
 });
