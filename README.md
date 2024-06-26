@@ -2,6 +2,25 @@
 
 This repository contains the backend server for managing a pet business application.
 
+## Knowledge Requirements
+
+To effectively contribute to this project, you should have knowledge of the following technologies and tools:
+
+- **Node.js**: JavaScript runtime environment.
+- **TypeScript**: Superset of JavaScript that adds static types.
+- **Express**: Web framework for Node.js.
+- **Prisma**: ORM for TypeScript and Node.js.
+- **PostgreSQL**: Relational database management system.
+- **Jest**: JavaScript testing framework.
+- **ESLint**: JavaScript linter for identifying and reporting on patterns in JavaScript.
+- **Prettier**: Opinionated code formatter.
+- **Husky**: Git hooks made easy.
+- **dotenv**: Loads environment variables from a `.env` file.
+- **pnpm**: Fast, disk space efficient package manager.
+- **Git**: Version control system.
+
+These technologies are fundamental to understanding and contributing to the Pet Business Backend project.
+
 ## Prerequisites
 
 Before running the application, make sure you have installed [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/) package manager.
