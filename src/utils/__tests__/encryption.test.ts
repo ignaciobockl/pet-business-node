@@ -1,11 +1,18 @@
 import bcrypt from 'bcrypt';
 
 import { comparePassword, encryptPassword } from '../encryption.ts';
+import logger from '../logger.ts';
 
 // Mocking bcrypt functions for testing purposes
 jest.mock('bcrypt');
+jest.mock('../logger.ts', () => ({
+  error: jest.fn(),
+}));
 
 describe('Password Utility Functions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mock call history before each test
+  });
   describe('encryptPassword', () => {
     it('should encrypt a valid password', async () => {
       const password = 'TestPassword123!';
@@ -52,6 +59,23 @@ describe('Password Utility Functions', () => {
 
       await expect(encryptPassword(longPassword)).rejects.toThrow(
         'Password does not meet minimum requirements'
+      );
+    });
+    it('should throw an error when bcrypt.hash fails', async () => {
+      const password = 'TestPassword123!';
+      const error = new Error('Hashing error');
+
+      // Mock bcrypt.hash to throw an error
+      (bcrypt.hash as jest.Mock).mockRejectedValue(error);
+
+      await expect(encryptPassword(password)).rejects.toThrow(
+        'Error encrypting password'
+      );
+
+      // Ensure logger.error was called with the correct arguments
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error encrypting password:',
+        error
       );
     });
   });
