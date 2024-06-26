@@ -1,6 +1,8 @@
 import { UserRole as PrismaUserRole } from '@prisma/client';
 import { z } from 'zod';
 
+import { passwordRegex } from '../utils/encryption.ts';
+
 export const UserRoleSchema = z.nativeEnum(PrismaUserRole);
 
 export type UserRoleEnumType = `${z.infer<typeof UserRoleSchema>}`;
@@ -13,8 +15,6 @@ export const UserSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
 });
-
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
 
 export const CreateUserSchema = z.object({
   userName: z
