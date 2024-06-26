@@ -1,10 +1,18 @@
 import bcrypt from 'bcrypt';
 
+import logger from './logger.ts';
+
 const saltRounds = 10;
 
 export const encryptPassword = async (password: string): Promise<string> => {
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
+  try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+  } catch (error) {
+    const errorMessage = 'Error al encriptar la contraseña';
+    logger.error(`${errorMessage}:`, error);
+    throw new Error(errorMessage);
+  }
 };
 
 export const comparePassword = async (
