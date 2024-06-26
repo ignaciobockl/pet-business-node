@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { encryptPassword } from '../encryption.ts';
+import { comparePassword, encryptPassword } from '../encryption.ts';
 
 // Mocking bcrypt functions for testing purposes
 jest.mock('bcrypt');
@@ -28,6 +28,19 @@ describe('Password Utility Functions', () => {
       await expect(encryptPassword(invalidPassword)).rejects.toThrow(
         'Password does not meet minimum requirements'
       );
+    });
+  });
+
+  describe('comparePassword', () => {
+    it('should return true for matching passwords', async () => {
+      const plainPassword = 'TestPassword123!';
+      const hashedPassword = await encryptPassword(plainPassword);
+
+      // Mock bcrypt.compare to simulate password comparison
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+
+      const result = await comparePassword(plainPassword, hashedPassword);
+      expect(result).toBe(true);
     });
   });
 });
