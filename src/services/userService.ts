@@ -46,12 +46,19 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
   // const encryptedPassword = await encryptPassword(userData.password);
 
   try {
-    // Validate user data using Zod
-    CreateUserSchema.parse(userData);
+    try {
+      // Validate user data using Zod
+      CreateUserSchema.parse(userData);
+    } catch (validationError) {
+      const errorMessage = `Validation error creating user: ${validationError instanceof Error ? validationError.message : 'Validation error occurred'}`;
+      logger.error(errorMessage, { validationError });
+      throw createValidationError(errorMessage, validationError);
+    }
 
     if (userData.role === PrismaUserRole.ADMIN) {
-      logger.error('Cannot create a user with the administrator role');
-      throw new Error('Cannot create a user with the administrator role');
+      const errorMessage = 'Cannot create a user with the administrator role';
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -61,8 +68,9 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
     });
 
     if (existingUser) {
-      logger.error(`User with email ${userData.mail} already exists`);
-      throw new Error(`User with email ${userData.mail} already exists`);
+      const errorMessage = `User with email ${userData.mail} already exists`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     try {
@@ -72,18 +80,20 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
           // password: encryptedPassword,
         },
       });
+      logger.info('User created successfully', { user });
       return user;
     } catch (error) {
-      logger.error('Error creating user:', error);
+      const errorMessage = 'Error creating user';
+      logger.error(errorMessage, { error });
       throw error;
     }
-  } catch (validationError) {
-    logger.error('Validation error creating user:', validationError);
-    const errorMessage = 'Validation error occurred';
-    throw createValidationError(
-      `Validation error creating user: ${errorMessage}`,
-      validationError
-    );
+  } catch (error) {
+    const errorMessage = `Error in createUser: ${error instanceof Error ? error.message : 'An error occurred'}`;
+    logger.error(errorMessage, { error });
+    if (error instanceof Error && error.name === 'ValidationError') {
+      throw error;
+    }
+    throw new Error(errorMessage);
   }
 };
 
