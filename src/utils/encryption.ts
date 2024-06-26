@@ -19,7 +19,7 @@ export const passwordRegex =
  * Number of salt rounds used for bcrypt hashing.
  * Higher rounds increase the computational cost of hashing.
  */
-const saltRounds = 10;
+const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
 
 /**
  * Encrypts a password using bcrypt hashing.
