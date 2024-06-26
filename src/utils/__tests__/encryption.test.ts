@@ -46,6 +46,14 @@ describe('Password Utility Functions', () => {
       // Ensure the result from encryptPassword is the mocked hashed password
       expect(result).toBe('hashedPassword123');
     });
+    it('should throw an error for a password exceeding the maximum length', async () => {
+      // More than 20 characters
+      const longPassword = 'VeryLongPassword1234567890!';
+
+      await expect(encryptPassword(longPassword)).rejects.toThrow(
+        'Password does not meet minimum requirements'
+      );
+    });
   });
 
   describe('comparePassword', () => {
