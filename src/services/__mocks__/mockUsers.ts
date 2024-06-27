@@ -1,12 +1,18 @@
 import { UserRole } from '@prisma/client';
+import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '../../models/User/user.ts';
 import { encryptPassword } from '../../utils/encryption.ts';
 
-const generateMockUsers = async (): Promise<User[]> => {
-  const passwordHash = await encryptPassword('passworD123!');
-  const oldPasswordHash = await encryptPassword('oldP!assword123');
+const password = 'passworD123!';
+const oldPassword = 'oldP!assword123';
+
+const currentDateISO = new Date(dayjs().toISOString());
+
+export const generateMockUsers = async (): Promise<User[]> => {
+  const passwordHash = await encryptPassword(password);
+  const oldPasswordHash = await encryptPassword(oldPassword);
 
   const mockUsers: User[] = [
     {
@@ -16,7 +22,7 @@ const generateMockUsers = async (): Promise<User[]> => {
       oldPassword: oldPasswordHash,
       role: UserRole.USER,
       mail: 'john@example.com',
-      createdAt: new Date(),
+      createdAt: currentDateISO,
       updatedAt: new Date(),
     },
     {
@@ -25,7 +31,7 @@ const generateMockUsers = async (): Promise<User[]> => {
       password: passwordHash,
       role: UserRole.EMPLOYEE,
       mail: 'jane@example.com',
-      createdAt: new Date(),
+      createdAt: currentDateISO,
       updatedAt: null,
     },
   ];
@@ -33,4 +39,27 @@ const generateMockUsers = async (): Promise<User[]> => {
   return mockUsers;
 };
 
-export default generateMockUsers;
+export const generateMockCreateUser = async (): Promise<User[]> => {
+  const mockUsers: User[] = [
+    {
+      id: uuidv4(),
+      userName: 'John Doe',
+      password: password,
+      oldPassword: oldPassword,
+      role: UserRole.USER,
+      mail: 'john@example.com',
+      createdAt: currentDateISO,
+    },
+    {
+      id: uuidv4(),
+      userName: 'Jane Smith',
+      password: password,
+      role: UserRole.EMPLOYEE,
+      mail: 'jane@example.com',
+      createdAt: currentDateISO,
+      updatedAt: null,
+    },
+  ];
+
+  return mockUsers;
+};

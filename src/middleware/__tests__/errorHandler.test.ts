@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { getUsers } from '../../controllers/user/userController.ts';
 import { User } from '../../models/User/user.ts';
-import generateMockUsers from '../../services/__mocks__/mockUsers.ts';
+import { generateMockUsers } from '../../services/__mocks__/mockUsers.ts';
 import * as userService from '../../services/userService.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
