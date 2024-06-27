@@ -14,13 +14,16 @@ import logger from './utils/logger.ts';
 
 const app = express();
 
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({
-    path: '.env.production',
-  });
-} else {
-  dotenv.config();
-}
+const envFile =
+  process.env.NODE_ENV === 'test'
+    ? '.env.test'
+    : process.env.NODE_ENV === 'production'
+      ? '.env.production'
+      : '.env.development';
+
+dotenv.config({
+  path: envFile,
+});
 
 // Middlewares
 app.use(express.json());
