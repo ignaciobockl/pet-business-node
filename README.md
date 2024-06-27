@@ -34,13 +34,15 @@ Before running the application, make sure you have installed [Node.js](https://n
    cd pet-business-backend
    ```
 
-2. Install dependencies:
+2. Create Environment Configuration Files: Create three environment configuration files .env.development, .env.test, and .env.production in the root directory of your project. Refer to .env.example for required variables.
+
+3. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-3. Prepare the project:
+4. Prepare the project:
 
    ```bash
    pnpm prepare
@@ -49,11 +51,20 @@ Before running the application, make sure you have installed [Node.js](https://n
 
    This step sets up the project environment and installs global dependencies.
 
-4. Generate Prisma client:
+5. Generate Prisma client:
+
    ```bash
    pnpm prisma:generate
    ```
+
    This command generates the Prisma client based on your schema.
+
+6. Run Database Migrations:
+   Execute the following command to apply database migrations for testing environment:
+
+   ```bash
+   pnpm prisma:migrate-test
+   ```
 
 ## Environment Variables
 
@@ -62,8 +73,11 @@ Ensure you have the following environment variables set up. You can copy them fr
 - `NODE_ENV=dev`
 - `DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"`
 - `PORT=<port-number>`
+- `SALT_ROUNDS=<salt-number>`
 
 Replace `<port-number>` with the desired port for running the server.
+
+Replace `<salt-number>`, the recommended number is 10 but you can implement the desired one, consider that the higher the number the more it consumes resources but you get better security.
 
 ## Scripts
 
@@ -82,6 +96,10 @@ Runs TypeScript type checking and linting using ESLint and Prettier to ensure co
 ### `pnpm prisma:migrate`
 
 Applies any database schema changes using Prisma Migrate in development mode.
+
+### `pnpm prisma:migrate-test`
+
+Applies any database schema changes using Prisma Migrate in test mode.
 
 ### `pnpm build`
 
