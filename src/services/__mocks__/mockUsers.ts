@@ -5,8 +5,8 @@ import { User } from '../../models/User/user.ts';
 import { encryptPassword } from '../../utils/encryption.ts';
 
 const generateMockUsers = async (): Promise<User[]> => {
-  const passwordHash = await encryptPassword('password123');
-  const oldPasswordHash = await encryptPassword('oldPassword123');
+  const passwordHash = await encryptPassword('passworD123!');
+  const oldPasswordHash = await encryptPassword('oldP!assword123');
 
   const mockUsers: User[] = [
     {
