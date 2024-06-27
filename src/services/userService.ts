@@ -1,5 +1,6 @@
 import { UserRole as PrismaUserRole } from '@prisma/client';
 import dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
@@ -81,6 +82,7 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
       const user = await prisma.user.create({
         data: {
           ...userData,
+          id: uuidv4(),
           password: hashedPassword,
           createdAt: dayjs().toISOString(),
           updatedAt: null,
