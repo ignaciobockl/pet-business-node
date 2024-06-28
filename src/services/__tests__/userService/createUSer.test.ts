@@ -5,15 +5,16 @@ import { generateMockCreateUser } from '../../__mocks__/mockUsers.ts';
 import { createUser } from '../../userService.ts';
 
 describe('createUser', () => {
+  let userData: CreateUserDto;
+
+  beforeAll(async () => {
+    // Genera el usuario de prueba una vez para todas las pruebas
+    const mockUser: User[] = await generateMockCreateUser();
+    userData = mockUser[0];
+  });
   beforeEach(async () => {
-    // Mock de usuarios para simular datos en la base de datos
-    // const mockUsers = await generateMockUsers();
     // Antes de cada prueba, limpiar y preparar el estado necesario
     await prisma.user.deleteMany(); // Elimina todos los usuarios antes de cada prueba
-    // Inserta los usuarios de prueba en la base de datos
-    // await prisma.user.createMany({
-    //   data: mockUsers,
-    // });
   });
 
   afterAll(async () => {
@@ -24,9 +25,6 @@ describe('createUser', () => {
   // TODO: crear una db para test
 
   it('should create a new user', async () => {
-    const mockUser: User[] = await generateMockCreateUser();
-    const userData: CreateUserDto = mockUser[0];
-
     const createdUser = await createUser(userData);
 
     expect(createdUser).toBeDefined();
@@ -37,9 +35,6 @@ describe('createUser', () => {
   });
 
   it('should throw validation error for invalid user data', async () => {
-    const mockUser: User[] = await generateMockCreateUser();
-    const userData: CreateUserDto = mockUser[0];
-
     const invalidUserData: CreateUserDto = {
       ...userData,
       mail: 'invalid-email',
@@ -47,6 +42,14 @@ describe('createUser', () => {
 
     await expect(createUser(invalidUserData)).rejects.toThrow(
       /Validation error creating user/
+    );
+  });
+
+  it('should throw an error if user with the same email already exists', async () => {
+    await createUser(userData); // Create the first user
+
+    await expect(createUser(userData)).rejects.toThrow(
+      /User with email .+ already exists/
     );
   });
 });
