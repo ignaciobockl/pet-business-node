@@ -1,3 +1,5 @@
+import { UserRole as PrismaUserRole } from '@prisma/client';
+
 import { CreateUserDto } from '../../../models/types/user.js';
 import { User } from '../../../models/User/user.ts';
 import prisma from '../../../prisma.ts';
@@ -53,6 +55,18 @@ describe('createUser', () => {
     // Attempt to create a second user with the same email and expect an error
     await expect(createUser(userData)).rejects.toThrow(
       /Error in createUser: User with email .+ already exists/
+    );
+  });
+
+  it('should throw an error if trying to create a user with ADMIN role', async () => {
+    const mockUser: User[] = await generateMockCreateUser();
+    const userDataModified: CreateUserDto = {
+      ...mockUser[0],
+      role: PrismaUserRole.ADMIN,
+    };
+
+    await expect(createUser(userDataModified)).rejects.toThrow(
+      /Cannot create a user with the administrator role/
     );
   });
 });
