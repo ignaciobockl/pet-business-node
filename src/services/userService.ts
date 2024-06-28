@@ -81,10 +81,12 @@ export const createUser = async (userData: CreateUserDto): Promise<User> => {
     try {
       const user = await prisma.user.create({
         data: {
-          ...userData,
           id: uuidv4(),
+          userName: userData.userName,
           password: hashedPassword,
-          createdAt: dayjs().toISOString(),
+          mail: userData.mail,
+          role: userData.role,
+          createdAt: new Date(dayjs().toISOString()),
           updatedAt: null,
         },
       });
