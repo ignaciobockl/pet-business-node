@@ -52,7 +52,6 @@ export const generateMockCreateUser = async (): Promise<User[]> => {
       id: uuidv4(),
       userName: faker.internet.userName().substring(0, 16).padEnd(6, 'a'),
       password: shufflePass(password),
-      oldPassword: shufflePass(oldPassword),
       role: faker.helpers.arrayElement([UserRole.USER, UserRole.EMPLOYEE]),
       mail: faker.internet.email(),
       createdAt: currentDateISO,
