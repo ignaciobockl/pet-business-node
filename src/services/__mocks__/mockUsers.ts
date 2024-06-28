@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { UserRole } from '@prisma/client';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +8,11 @@ import { encryptPassword } from '../../utils/encryption.ts';
 
 const password = 'passworD123!';
 const oldPassword = 'oldP!assword123';
+const shufflePass = (word: string): string =>
+  word
+    .split('')
+    .sort(() => Math.random() - 0.5)
+    .join('');
 
 const currentDateISO = new Date(dayjs().toISOString());
 
@@ -43,21 +49,13 @@ export const generateMockCreateUser = async (): Promise<User[]> => {
   const mockUsers: User[] = [
     {
       id: uuidv4(),
-      userName: 'John Doe',
-      password: password,
+      userName: faker.internet.userName(),
+      password: shufflePass(password),
       oldPassword: oldPassword,
-      role: UserRole.USER,
-      mail: 'john@example.com',
+      // role: UserRole.USER,
+      role: faker.helpers.arrayElement([UserRole.USER, UserRole.EMPLOYEE]),
+      mail: faker.internet.email(),
       createdAt: currentDateISO,
-    },
-    {
-      id: uuidv4(),
-      userName: 'Jane Smith',
-      password: password,
-      role: UserRole.EMPLOYEE,
-      mail: 'jane@example.com',
-      createdAt: currentDateISO,
-      updatedAt: null,
     },
   ];
 
