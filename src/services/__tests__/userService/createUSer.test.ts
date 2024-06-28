@@ -35,4 +35,18 @@ describe('createUser', () => {
     expect(createdUser.role).toBe(userData.role);
     expect(createdUser.createdAt).toBeDefined();
   });
+
+  it('should throw validation error for invalid user data', async () => {
+    const mockUser: User[] = await generateMockCreateUser();
+    const userData: CreateUserDto = mockUser[0];
+
+    const invalidUserData: CreateUserDto = {
+      ...userData,
+      mail: 'invalid-email',
+    };
+
+    await expect(createUser(invalidUserData)).rejects.toThrow(
+      /Validation error creating user/
+    );
+  });
 });
