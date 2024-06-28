@@ -35,6 +35,7 @@ export const generateMockUsers = async (): Promise<User[]> => {
       id: uuidv4(),
       userName: 'Jane Smith',
       password: passwordHash,
+      oldPassword: null,
       role: UserRole.EMPLOYEE,
       mail: 'jane@example.com',
       createdAt: currentDateISO,
