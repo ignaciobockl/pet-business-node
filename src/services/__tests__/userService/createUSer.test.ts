@@ -46,10 +46,13 @@ describe('createUser', () => {
   });
 
   it('should throw an error if user with the same email already exists', async () => {
-    await createUser(userData); // Create the first user
+    // Create the first user and verify it was created successfully
+    const firstUser = await createUser(userData);
+    expect(firstUser).toBeDefined();
 
+    // Attempt to create a second user with the same email and expect an error
     await expect(createUser(userData)).rejects.toThrow(
-      /User with email .+ already exists/
+      /Error in createUser: User with email .+ already exists/
     );
   });
 });
