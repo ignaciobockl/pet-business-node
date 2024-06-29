@@ -7,9 +7,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import { connectDatabase, disconnectDatabase } from './prisma.ts';
+import { connectDatabase } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
 import handleProcessErrors from './utils/exceptionHandler.ts';
+import handleAppShutdown from './utils/handleAppShutdown.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
@@ -71,24 +72,8 @@ connectDatabase()
       }
     });
 
-    // Manejo de cierre de la aplicación
-    process.on('SIGINT', async () => {
-      logger.info('Cerrando la aplicación...');
-      await disconnectDatabase();
-      server.close(() => {
-        logger.info('Servidor cerrado');
-        process.exit(0);
-      });
-    });
-
-    process.on('SIGTERM', async () => {
-      logger.info('Cerrando la aplicación...');
-      await disconnectDatabase();
-      server.close(() => {
-        logger.info('Servidor cerrado');
-        process.exit(0);
-      });
-    });
+    //Handling application closure
+    handleAppShutdown(server);
   })
   .catch((error) => {
     logger.error('Error al conectar con la base de datos:', error);
