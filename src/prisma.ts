@@ -4,7 +4,7 @@ import logger from './utils/logger.ts';
 
 const prisma = new PrismaClient();
 
-export const testConnection = async (): Promise<void> => {
+export const connectDatabase = async (): Promise<void> => {
   try {
     await prisma.$connect();
     logger.info('Conexión a PostgreSQL exitosa');
@@ -13,7 +13,7 @@ export const testConnection = async (): Promise<void> => {
   }
 };
 
-export const disconnectPrisma = async (): Promise<void> => {
+export const disconnectDatabase = async (): Promise<void> => {
   try {
     await prisma.$disconnect();
     logger.info('Desconexión de PostgreSQL exitosa');

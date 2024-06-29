@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import { disconnectPrisma, testConnection } from './prisma.ts';
+import { connectDatabase, disconnectDatabase } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
 import handleProcessErrors from './utils/exceptionHandler.ts';
 import logger from './utils/logger.ts';
@@ -57,36 +57,40 @@ handleProcessErrors();
 const PORT = process.env.PORT || 3000;
 
 // Connection to the database
-const server = app.listen(PORT, () => {
-  if (process.env.NODE_ENV === 'production') {
-    logger.info(
-      `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
-    );
-  } else {
-    testConnection();
-    logger.debug(
-      `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
-    );
-  }
-});
+connectDatabase()
+  .then(() => {
+    const server = app.listen(PORT, () => {
+      if (process.env.NODE_ENV === 'production') {
+        logger.info(
+          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
+        );
+      } else {
+        logger.debug(
+          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
+        );
+      }
+    });
 
-// Disconnection from the database
-// This event is fired when 'Ctrl+C' is pressed
-process.on('SIGINT', async () => {
-  logger.info('Cerrando la aplicación...');
-  await disconnectPrisma();
-  server.close(() => {
-    logger.info('Servidor cerrado');
-    process.exit(0);
-  });
-});
+    // Manejo de cierre de la aplicación
+    process.on('SIGINT', async () => {
+      logger.info('Cerrando la aplicación...');
+      await disconnectDatabase();
+      server.close(() => {
+        logger.info('Servidor cerrado');
+        process.exit(0);
+      });
+    });
 
-// This event is fired when the process termination signal is received
-process.on('SIGTERM', async () => {
-  logger.info('Cerrando la aplicación...');
-  await disconnectPrisma();
-  server.close(() => {
-    logger.info('Servidor cerrado');
-    process.exit(0);
+    process.on('SIGTERM', async () => {
+      logger.info('Cerrando la aplicación...');
+      await disconnectDatabase();
+      server.close(() => {
+        logger.info('Servidor cerrado');
+        process.exit(0);
+      });
+    });
+  })
+  .catch((error) => {
+    logger.error('Error al conectar con la base de datos:', error);
+    process.exit(1); // Salir con código de error
   });
-});

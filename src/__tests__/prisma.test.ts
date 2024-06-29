@@ -1,4 +1,4 @@
-import prisma, { testConnection } from '../prisma.ts';
+import prisma, { connectDatabase } from '../prisma.ts';
 
 describe('prisma', () => {
   beforeAll(async () => {
@@ -10,7 +10,7 @@ describe('prisma', () => {
   });
 
   it('should connect to the database successfully', async () => {
-    await expect(testConnection()).resolves.not.toThrow();
+    await expect(connectDatabase()).resolves.not.toThrow();
   });
 
   it('should disconnect from the database successfully', async () => {
