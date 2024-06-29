@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import { testConnection } from './prisma.ts';
+import { disconnectPrisma, testConnection } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
 import handleProcessErrors from './utils/exceptionHandler.ts';
 import logger from './utils/logger.ts';
@@ -55,7 +55,8 @@ app.use(errorHandler);
 handleProcessErrors();
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// Connection to the database
+const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV === 'production') {
     logger.info(
       `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
@@ -66,4 +67,15 @@ app.listen(PORT, () => {
       `Servidor corriendo en el entono ${process.env.NODE_ENV} en el puerto ${PORT}`
     );
   }
+});
+
+// Disconnection from the database
+// This event is fired when 'Ctrl+C' is pressed
+process.on('SIGINT', async () => {
+  logger.info('Cerrando la aplicación...');
+  await disconnectPrisma();
+  server.close(() => {
+    logger.info('Servidor cerrado');
+    process.exit(0);
+  });
 });

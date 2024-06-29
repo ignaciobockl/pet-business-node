@@ -13,4 +13,13 @@ export const testConnection = async (): Promise<void> => {
   }
 };
 
+export const disconnectPrisma = async (): Promise<void> => {
+  try {
+    await prisma.$disconnect();
+    logger.info('Desconexión de PostgreSQL exitosa');
+  } catch (error) {
+    logger.error('Error al desconectar de PostgreSQL:', error);
+  }
+};
+
 export default prisma;
