@@ -55,6 +55,7 @@ app.use(errorHandler);
 handleProcessErrors();
 
 const PORT = process.env.PORT || 3000;
+
 // Connection to the database
 const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV === 'production') {
@@ -72,6 +73,16 @@ const server = app.listen(PORT, () => {
 // Disconnection from the database
 // This event is fired when 'Ctrl+C' is pressed
 process.on('SIGINT', async () => {
+  logger.info('Cerrando la aplicación...');
+  await disconnectPrisma();
+  server.close(() => {
+    logger.info('Servidor cerrado');
+    process.exit(0);
+  });
+});
+
+// This event is fired when the process termination signal is received
+process.on('SIGTERM', async () => {
   logger.info('Cerrando la aplicación...');
   await disconnectPrisma();
   server.close(() => {
