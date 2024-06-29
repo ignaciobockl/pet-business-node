@@ -16,7 +16,7 @@
     "prettier": "prettier --write \"src/**/*.ts\"",
     "prettier:check": "prettier --check \"src/**/*.ts\"",
     "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev",
     "prisma:migrate-test": "dotenv -e .env.test npx prisma migrate deploy",
     "start": "node dist/app.js",
     "test": "tsc --noEmit --pretty && pnpm lint-staged --allow-empty",
