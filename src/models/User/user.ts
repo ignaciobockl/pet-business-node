@@ -4,7 +4,7 @@ export interface User {
   id: string;
   userName: string;
   password: string;
-  oldPassword?: string | null;
+  oldPassword?: string[];
   role: PrismaUserRole;
   mail: string;
   // person?: Person | null;
