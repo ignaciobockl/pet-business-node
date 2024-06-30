@@ -1,15 +1,15 @@
-import { User, UserResponse } from '../../models/User/user.ts';
-import prisma from '../../prisma.ts';
-import logger from '../../utils/logger.ts';
-import { generateMockUsers } from '../__mocks__/mockUsers.ts';
-import { getAllUsers } from '../userService.ts';
+import { User, UserResponse } from '../../../models/User/user.ts';
+import prisma from '../../../prisma.ts';
+import logger from '../../../utils/logger.ts';
+import { generateMockUsers } from '../../__mocks__/mockUsers.ts';
+import { getAllUsers } from '../../userService.ts';
 
-jest.mock('../../prisma.ts', () => ({
+jest.mock('../../../prisma.ts', () => ({
   user: {
     findMany: jest.fn(),
   },
 }));
-jest.mock('../../utils/logger.ts');
+jest.mock('../../../utils/logger.ts');
 
 describe('getAllUsers', () => {
   beforeEach(() => {
