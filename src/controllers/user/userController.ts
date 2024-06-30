@@ -5,8 +5,6 @@ import * as userService from '../../services/userService.ts';
 import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
-// ! temporalmente se utiliza este disable
-// eslint-disable-next-line import/prefer-default-export
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   logger.info(`Incoming request: ${req.method} ${req.url}`);
   try {
@@ -35,21 +33,41 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// export const createUser = async (
-//   req: Request<{}, {}, CreateUserDto>,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const user = await userService.createUser(req.body);
-//     res.status(201).json(user);
-//   } catch (error) {
-//     if (
-//       error instanceof Error &&
-//       error.message === 'Cannot create a user with the administrator role'
-//     )
-//       res.status(400).json({ error: error.message });
-//     else {
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   }
-// };
+export const createUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  logger.info(`Incoming request: ${req.method} ${req.url}`);
+  try {
+    const { userName, password, mail, role } = req.body;
+    const newUser = await userService.createUser({
+      userName,
+      password,
+      mail,
+      role,
+    });
+
+    handleResponse(res, {
+      data: newUser,
+      message: 'User created successfully',
+      status: 201,
+    });
+    logger.info(`Usuario ${userName} creado correctamente`);
+  } catch (error) {
+    logger.error('Error creating user:', error);
+    if (error instanceof Error) {
+      const statusCode = getStatusCode(error);
+      handleResponse(res, {
+        data: null,
+        message: error.message,
+        status: statusCode,
+      });
+    } else {
+      handleResponse(res, {
+        data: null,
+        message: 'Internal Server Error',
+        status: 500,
+      });
+    }
+  }
+};
