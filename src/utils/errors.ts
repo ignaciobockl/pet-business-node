@@ -1,7 +1,4 @@
-interface ValidationError extends Error {
-  details?: unknown;
-  missingFields?: string[];
-}
+import { ValidationError } from './interface/index.js';
 
 /**
  * Creates a validation error with the specified message, optional details, and missing fields.
