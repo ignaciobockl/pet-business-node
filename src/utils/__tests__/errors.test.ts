@@ -30,4 +30,16 @@ describe('createValidationError', () => {
     expect(error.message).toBe(errorMessage);
     expect(error.details).toBeUndefined();
   });
+
+  it('should create a validation error with missing fields', () => {
+    const errorMessage = 'Missing fields';
+    const missingFields = ['field1', 'field2'];
+    const error = createValidationError(errorMessage, undefined, missingFields);
+
+    expect(error instanceof Error).toBe(true);
+    expect(error.name).toBe('ValidationError');
+    expect(error.message).toBe(errorMessage);
+    expect(error.details).toBeUndefined();
+    expect(error.missingFields).toEqual(missingFields);
+  });
 });
