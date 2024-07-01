@@ -55,4 +55,14 @@ describe('createValidationError', () => {
     expect(error.details).toEqual(details);
     expect(error.missingFields).toEqual(missingFields);
   });
+
+  it('should create a validation error without missing fields if not provided', () => {
+    const errorMessage = 'Invalid data';
+    const error = createValidationError(errorMessage);
+
+    expect(error instanceof Error).toBe(true);
+    expect(error.name).toBe('ValidationError');
+    expect(error.message).toBe(errorMessage);
+    expect(error.missingFields).toBeUndefined();
+  });
 });
