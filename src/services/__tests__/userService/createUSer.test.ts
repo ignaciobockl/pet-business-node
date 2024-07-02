@@ -14,10 +14,11 @@ describe('createUser', () => {
     const mockUser: User[] = await generateMockCreateUser();
     userData = mockUser[0];
   });
-  beforeEach(async () => {
-    // Antes de cada prueba, limpiar y preparar el estado necesario
-    await prisma.user.deleteMany(); // Elimina todos los usuarios antes de cada prueba
-  });
+
+  // beforeEach(async () => {
+  // Antes de cada prueba, limpiar y preparar el estado necesario
+  // await prisma.user.deleteMany(); // Elimina todos los usuarios antes de cada prueba
+  // });
 
   afterAll(async () => {
     // Después de todas las pruebas, asegurarse de limpiar la base de datos
