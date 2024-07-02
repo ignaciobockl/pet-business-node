@@ -1,7 +1,6 @@
 /// <reference path="./types/express.d.ts" />
 
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -14,17 +13,6 @@ import handleAppShutdown from './utils/handleAppShutdown.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
-
-const envFile =
-  process.env.NODE_ENV === 'test'
-    ? '.env.test'
-    : process.env.NODE_ENV === 'production'
-      ? '.env.production'
-      : '.env.development';
-
-dotenv.config({
-  path: envFile,
-});
 
 // Middlewares
 app.use(express.json());
