@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { getUsers } from '../../controllers/user/userController.ts';
+import { getAllUsersController } from '../../controllers/user/userController.ts';
 import { User } from '../../models/User/user.ts';
 import { generateMockUsers } from '../../services/__mocks__/mockUsers.ts';
 
@@ -33,7 +33,7 @@ describe('User Controller - getUsers', () => {
   it('should return users with status 200', async () => {
     (getAllUsersService as jest.Mock).mockResolvedValue(mockUsers);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(getAllUsersService).toHaveBeenCalledTimes(1);
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
@@ -48,7 +48,7 @@ describe('User Controller - getUsers', () => {
     err.name = 'ValidationError';
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
@@ -62,7 +62,7 @@ describe('User Controller - getUsers', () => {
     err.name = 'UnauthorizedError';
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
@@ -76,7 +76,7 @@ describe('User Controller - getUsers', () => {
     err.name = 'ForbiddenError';
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
@@ -90,7 +90,7 @@ describe('User Controller - getUsers', () => {
     err.name = 'NotFoundError';
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
@@ -103,7 +103,7 @@ describe('User Controller - getUsers', () => {
     const err = new Error('Unknown error');
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
@@ -117,7 +117,7 @@ describe('User Controller - getUsers', () => {
     err.name = 'ServiceUnavailableError'; // Set the error name to match the expected name
     (getAllUsersService as jest.Mock).mockRejectedValue(err);
 
-    await getUsers(req as Request, mockRes as Response);
+    await getAllUsersController(req as Request, mockRes as Response);
 
     expect(handleResponse).toHaveBeenCalledWith(mockRes, {
       data: null,
