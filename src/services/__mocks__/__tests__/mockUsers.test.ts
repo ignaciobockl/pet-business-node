@@ -1,12 +1,11 @@
-import { UserRole } from '@prisma/client';
+import { UserRole as PrismaUserRole } from '@prisma/client';
 
 import { User } from '../../../models/User/user.ts';
-import prisma from '../../../prisma.ts';
 import { generateMockCreateUser, generateMockUsers } from '../mockUsers.ts';
 
 describe('generateMockUsers', () => {
   it('should generate mock users with expected properties', async () => {
-    await prisma.user.deleteMany();
+    // await prisma.user.deleteMany();
 
     const mockUsers: User[] = await generateMockUsers();
 
@@ -25,8 +24,8 @@ describe('generateMockUsers', () => {
       } else expect(user.oldPassword).toBeDefined();
     });
 
-    expect(mockUsers[0].role).toBe(UserRole.USER);
-    expect(mockUsers[1].role).toBe(UserRole.EMPLOYEE);
+    expect(mockUsers[0].role).toBe(PrismaUserRole.USER);
+    expect(mockUsers[1].role).toBe(PrismaUserRole.EMPLOYEE);
   });
 });
 
