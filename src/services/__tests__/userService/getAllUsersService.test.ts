@@ -2,7 +2,7 @@ import { User, UserResponse } from '../../../models/User/user.ts';
 import prisma from '../../../prisma.ts';
 import logger from '../../../utils/logger.ts';
 import { generateMockUsers } from '../../__mocks__/mockUsers.ts';
-import { getAllUsers } from '../../userService.ts';
+import { getAllUsersService } from '../../userService.ts';
 
 jest.mock('../../../prisma.ts', () => ({
   user: {
@@ -21,7 +21,7 @@ describe('getAllUsers', () => {
 
     (prisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
 
-    const result = await getAllUsers();
+    const result = await getAllUsersService();
 
     expect(result.length).toEqual(mockUsers.length);
 
@@ -50,7 +50,7 @@ describe('getAllUsers', () => {
       new Error(errorMessage)
     );
 
-    await expect(getAllUsers()).rejects.toThrow(errorMessage);
+    await expect(getAllUsersService()).rejects.toThrow(errorMessage);
 
     expect(logger.error).toHaveBeenCalled();
   });
@@ -58,7 +58,7 @@ describe('getAllUsers', () => {
   it('should return an empty array if no users are found', async () => {
     (prisma.user.findMany as jest.Mock).mockResolvedValue([]);
 
-    const result = await getAllUsers();
+    const result = await getAllUsersService();
 
     expect(result).toEqual([]);
     expect(prisma.user.findMany).toHaveBeenCalledTimes(1);
@@ -70,7 +70,7 @@ describe('getAllUsers', () => {
 
     (prisma.user.findMany as jest.Mock).mockResolvedValue(malformedUsers);
 
-    await expect(getAllUsers()).rejects.toThrow(
+    await expect(getAllUsersService()).rejects.toThrow(
       'Validation error for user with ID 1'
     );
 
@@ -95,7 +95,7 @@ describe('getAllUsers', () => {
 
     (prisma.user.findMany as jest.Mock).mockResolvedValue([invalidUser]);
 
-    await expect(getAllUsers()).rejects.toThrow(
+    await expect(getAllUsersService()).rejects.toThrow(
       `Validation error for user with ID ${invalidUser.id}`
     );
 

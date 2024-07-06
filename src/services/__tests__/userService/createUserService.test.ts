@@ -4,7 +4,7 @@ import { CreateUserDto } from '../../../models/types/user.js';
 import { User } from '../../../models/User/user.ts';
 import prisma from '../../../prisma.ts';
 import { generateMockCreateUser } from '../../__mocks__/mockUsers.ts';
-import { createUser } from '../../userService.ts';
+import { createUserService } from '../../userService.ts';
 
 describe('createUser', () => {
   let userData: CreateUserDto;
@@ -26,7 +26,7 @@ describe('createUser', () => {
   });
 
   it('should create a new user', async () => {
-    const createdUser = await createUser(userData);
+    const createdUser = await createUserService(userData);
 
     expect(createdUser).toBeDefined();
     expect(createdUser.userName).toBe(userData.userName);
@@ -41,18 +41,18 @@ describe('createUser', () => {
       mail: 'invalid-email',
     };
 
-    await expect(createUser(invalidUserData)).rejects.toThrow(
+    await expect(createUserService(invalidUserData)).rejects.toThrow(
       /Validation error creating user/
     );
   });
 
   it('should throw an err or if user with the same email already exists', async () => {
     // Create the first user and verify it was created successfully
-    const firstUser = await createUser(userData);
+    const firstUser = await createUserService(userData);
     expect(firstUser).toBeDefined();
 
     // Attempt to create a second user with the same email and expect an error
-    await expect(createUser(userData)).rejects.toThrow(
+    await expect(createUserService(userData)).rejects.toThrow(
       /Error in createUser: User with email .+ already exists/
     );
   });
@@ -64,7 +64,7 @@ describe('createUser', () => {
       role: PrismaUserRole.ADMIN,
     };
 
-    await expect(createUser(userDataModified)).rejects.toThrow(
+    await expect(createUserService(userDataModified)).rejects.toThrow(
       /Cannot create a user with the administrator role/
     );
   });

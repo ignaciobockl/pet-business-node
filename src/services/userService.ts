@@ -10,7 +10,7 @@ import { encryptPassword } from '../utils/encryption.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
 
-export const getAllUsers = async (): Promise<UserResponse[]> => {
+export const getAllUsersService = async (): Promise<UserResponse[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
 
@@ -45,7 +45,9 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
 };
 
 // eslint-disable-next-line complexity
-export const createUser = async (userData: CreateUserDto): Promise<User> => {
+export const createUserService = async (
+  userData: CreateUserDto
+): Promise<User> => {
   // const encryptedPassword = await encryptPassword(userData.password);
 
   try {
