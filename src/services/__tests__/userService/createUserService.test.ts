@@ -10,22 +10,20 @@ describe('createUser', () => {
   let userData: CreateUserDto;
 
   beforeAll(async () => {
-    // Genera el usuario de prueba una vez para todas las pruebas
+    // Generate the test user once for all tests
     const mockUser: User[] = await generateMockCreateUser();
     userData = mockUser[0];
   });
 
-  // beforeEach(async () => {
-  // Antes de cada prueba, limpiar y preparar el estado necesario
-  // await prisma.user.deleteMany(); // Elimina todos los usuarios antes de cada prueba
-  // });
-
-  afterAll(async () => {
-    // Después de todas las pruebas, asegurarse de limpiar la base de datos
-    await prisma.$disconnect();
+  beforeEach(async () => {
+    // Before each test, clean and prepare the necessary state
+    await prisma.user.deleteMany();
   });
 
-  // TODO: crear una db para test
+  afterAll(async () => {
+    // After all the tests, make sure to clean the database
+    await prisma.$disconnect();
+  });
 
   it('should create a new user', async () => {
     const createdUser = await createUser(userData);
@@ -48,7 +46,7 @@ describe('createUser', () => {
     );
   });
 
-  it('should throw an error if user with the same email already exists', async () => {
+  it('should throw an err or if user with the same email already exists', async () => {
     // Create the first user and verify it was created successfully
     const firstUser = await createUser(userData);
     expect(firstUser).toBeDefined();
