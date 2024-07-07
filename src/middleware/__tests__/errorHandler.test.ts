@@ -61,4 +61,21 @@ describe('handleResponse', () => {
       status: 500,
     });
   });
+
+  it('should send a JSON response with null data', () => {
+    const responseData: ResponseData = {
+      data: null,
+      message: 'Data is null',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: null,
+      message: 'Data is null',
+      status: 200,
+    });
+  });
 });
