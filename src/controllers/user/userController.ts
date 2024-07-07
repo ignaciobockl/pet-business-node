@@ -1,28 +1,41 @@
 import { Request, Response } from 'express';
 
 import { getStatusCode } from '../../middleware/errorHandler.ts';
-import * as userService from '../../services/userService.ts';
+import {
+  createUserService,
+  getAllUsersService,
+} from '../../services/userService.ts';
 import createValidationError from '../../utils/errors.ts';
 import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
-  logger.info(`Incoming request: ${req.method} ${req.url}`);
+export const getAllUsersController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const users = await userService.getAllUsers();
+    const users = await getAllUsersService();
+
+    // Validar los datos obtenidos
+    users.forEach((user) => {
+      if (!user.id || typeof user.id !== 'string') {
+        const errorMessage = `Validation error for user with ID ${user.id}`;
+        logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+    });
+
     handleResponse(res, {
       data: users,
       message: 'Users retrieved successfully',
       status: 200,
     });
-  } catch (error) {
-    logger.error('Error retrieving users:', error);
+  } catch (error: unknown) {
     if (error instanceof Error) {
-      const statusCode = getStatusCode(error); // Obtiene el código de estado adecuado para el error
       handleResponse(res, {
         data: null,
-        message: error.message,
-        status: statusCode,
+        message: error.message || 'Unable to retrieve users',
+        status: 500,
       });
     } else {
       handleResponse(res, {
@@ -35,7 +48,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 // eslint-disable-next-line complexity
-export const createUser = async (
+export const createUserController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -54,7 +67,7 @@ export const createUser = async (
       throw createValidationError(errorMessage, undefined, missingFields);
     }
 
-    const newUser = await userService.createUser({
+    const newUser = await createUserService({
       userName,
       password,
       mail,
