@@ -78,4 +78,21 @@ describe('handleResponse', () => {
       status: 200,
     });
   });
+
+  it('should send a JSON response with empty data', () => {
+    const responseData: ResponseData<[]> = {
+      data: [],
+      message: 'Empty array',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: [],
+      message: 'Empty array',
+      status: 200,
+    });
+  });
 });
