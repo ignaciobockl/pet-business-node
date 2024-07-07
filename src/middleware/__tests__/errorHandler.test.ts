@@ -95,4 +95,38 @@ describe('handleResponse', () => {
       status: 200,
     });
   });
+
+  it('should send a JSON response with undefined data', () => {
+    const responseData: ResponseData = {
+      data: undefined,
+      message: 'Undefined data',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'Undefined data',
+      status: 200,
+    });
+  });
+
+  it('should send a JSON response with a nested object as data', () => {
+    const responseData: ResponseData = {
+      data: { user: { id: 1, name: 'Nested User' } },
+      message: 'Nested object',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: { user: { id: 1, name: 'Nested User' } },
+      message: 'Nested object',
+      status: 200,
+    });
+  });
 });
