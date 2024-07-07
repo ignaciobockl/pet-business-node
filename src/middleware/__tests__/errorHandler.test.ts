@@ -15,7 +15,7 @@ describe('handleResponse', () => {
 
   it('should send a JSON response with the provided data, message, and status code', () => {
     const responseData: ResponseData = {
-      data: { id: 1, name: 'John Doe' },
+      data: { id: 1, name: 'Lalo Landa' },
       message: 'Success',
       status: 200,
     };
@@ -24,7 +24,7 @@ describe('handleResponse', () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      data: { id: 1, name: 'John Doe' },
+      data: { id: 1, name: 'Lalo Landa' },
       message: 'Success',
       status: 200,
     });
