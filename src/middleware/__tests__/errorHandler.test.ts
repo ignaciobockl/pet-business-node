@@ -45,4 +45,20 @@ describe('handleResponse', () => {
       status: 204,
     });
   });
+
+  it('should send a JSON response with an error message and 500 status if no status is provided', () => {
+    const responseData: ResponseData = {
+      message: 'Error occurred',
+      status: 500,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'Error occurred',
+      status: 500,
+    });
+  });
 });
