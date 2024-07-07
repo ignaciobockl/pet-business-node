@@ -36,22 +36,22 @@ describe('getAllUsersController', () => {
     });
   });
 
-  // it('should handle errors from getAllUsersService', async () => {
-  //   const errorMessage = 'Error retrieving users';
+  it('should handle errors from getAllUsersService', async () => {
+    const errorMessage = 'Error retrieving users';
 
-  //   (getAllUsersService as jest.Mock).mockRejectedValue(
-  //     new Error(errorMessage)
-  //   );
+    (getAllUsersService as jest.Mock).mockRejectedValue(
+      new Error(errorMessage)
+    );
 
-  //   await getAllUsersController(req as Request, res as Response);
+    await getAllUsersController(req as Request, res as Response);
 
-  //   expect(getAllUsersService).toHaveBeenCalledTimes(1);
-  //   expect(handleResponse).toHaveBeenCalledWith(res, {
-  //     data: null,
-  //     message: errorMessage,
-  //     status: 500,
-  //   });
-  // });
+    expect(getAllUsersService).toHaveBeenCalledTimes(1);
+    expect(handleResponse).toHaveBeenCalledWith(res, {
+      data: null,
+      message: errorMessage,
+      status: 500,
+    });
+  });
 
   // it('should handle validation errors from getAllUsersService', async () => {
   //   const validationErrorMessage = 'Validation error for user with ID 1';
