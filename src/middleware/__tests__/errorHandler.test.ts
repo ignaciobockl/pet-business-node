@@ -29,4 +29,20 @@ describe('handleResponse', () => {
       status: 200,
     });
   });
+
+  it('should send a JSON response with the provided message and status code without data', () => {
+    const responseData: ResponseData = {
+      message: 'No Content',
+      status: 204,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'No Content',
+      status: 204,
+    });
+  });
 });
