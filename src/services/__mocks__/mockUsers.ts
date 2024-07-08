@@ -56,17 +56,14 @@ export const generateMockUsers = async (): Promise<User[]> => {
   return mockUsers;
 };
 
-export const generateMockCreateUser = async (): Promise<User[]> => {
-  const mockUsers: User[] = [
-    {
-      id: uuidv4(),
-      userName: faker.internet.userName().substring(0, 16).padEnd(6, 'a'),
-      password: shufflePass(password),
-      role: faker.helpers.arrayElement([UserRole.USER, UserRole.EMPLOYEE]),
-      mail: faker.internet.email().toLowerCase(),
-      createdAt: currentDateISO,
-    },
-  ];
-
+export const generateMockCreateUser = async (): Promise<User> => {
+  const mockUsers: User = {
+    id: uuidv4(),
+    userName: faker.internet.userName().substring(0, 16).padEnd(6, 'a'),
+    password: shufflePass(password),
+    role: faker.helpers.arrayElement([UserRole.USER, UserRole.EMPLOYEE]),
+    mail: faker.internet.email().toLowerCase(),
+    createdAt: currentDateISO,
+  };
   return mockUsers;
 };

@@ -11,8 +11,8 @@ describe('createUser', () => {
 
   beforeAll(async () => {
     // Generate the test user once for all tests
-    const mockUser: User[] = await generateMockCreateUser();
-    userData = mockUser[0];
+    const mockUser: User = await generateMockCreateUser();
+    userData = mockUser;
   });
 
   beforeEach(async () => {
@@ -58,9 +58,9 @@ describe('createUser', () => {
   });
 
   it('should throw an error if trying to create a user with ADMIN role', async () => {
-    const mockUser: User[] = await generateMockCreateUser();
+    const mockUser: User = await generateMockCreateUser();
     const userDataModified: CreateUserDto = {
-      ...mockUser[0],
+      ...mockUser,
       role: PrismaUserRole.ADMIN,
     };
 

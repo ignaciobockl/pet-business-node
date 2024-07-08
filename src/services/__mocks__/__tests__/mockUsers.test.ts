@@ -31,16 +31,13 @@ describe('generateMockUsers', () => {
 
 describe('generateMockCreateUser', () => {
   it('should generate a mock user with expected properties', async () => {
-    const mockUser: User[] = await generateMockCreateUser();
+    const mockUser: User = await generateMockCreateUser();
 
-    expect(mockUser).toHaveLength(1);
-
-    const user = mockUser[0];
-    expect(user.id).toBeTruthy();
-    expect(user.userName).toBeTruthy();
-    expect(user.password).toBeTruthy();
-    expect(user.mail).toBeTruthy();
-    expect(user.createdAt).toBeTruthy();
-    expect(user.role).toBeTruthy();
+    expect(mockUser.id).toBeTruthy();
+    expect(mockUser.userName).toBeTruthy();
+    expect(mockUser.password).toBeTruthy();
+    expect(mockUser.mail).toBeTruthy();
+    expect(mockUser.createdAt).toBeTruthy();
+    expect(mockUser.role).toBeTruthy();
   });
 });
