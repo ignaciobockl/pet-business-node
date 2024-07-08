@@ -53,6 +53,10 @@ connectDatabase()
         logger.info(
           `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
         );
+      } else if (process.env.NODE_ENV === 'test') {
+        logger.debug(
+          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
+        );
       } else {
         logger.debug(
           `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
@@ -67,3 +71,5 @@ connectDatabase()
     logger.error('Error al conectar con la base de datos:', error);
     process.exit(1); // Salir con código de error
   });
+
+export default app;
