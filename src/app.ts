@@ -6,10 +6,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import { connectDatabase } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
+// eslint-disable-next-line import/no-cycle
+import startServer from './server.ts';
 import handleProcessErrors from './utils/exceptionHandler.ts';
-import handleAppShutdown from './utils/handleAppShutdown.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
@@ -43,33 +43,8 @@ app.use(errorHandler);
 // Handling unhandled errors and promise rejections
 handleProcessErrors();
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
-// Connection to the database
-connectDatabase()
-  .then(() => {
-    const server = app.listen(PORT, () => {
-      if (process.env.NODE_ENV === 'production') {
-        logger.info(
-          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
-        );
-      } else if (process.env.NODE_ENV === 'test') {
-        logger.debug(
-          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
-        );
-      } else {
-        logger.debug(
-          `Servidor corriendo en el entorno ${process.env.NODE_ENV} en el puerto ${PORT}`
-        );
-      }
-    });
-
-    //Handling application closure
-    handleAppShutdown(server);
-  })
-  .catch((error) => {
-    logger.error('Error al conectar con la base de datos:', error);
-    process.exit(1); // Salir con código de error
-  });
+startServer(PORT);
 
 export default app;
