@@ -43,8 +43,22 @@ describe('generateMockCreateUser', () => {
     expect(mockUser.id).toBeTruthy();
     expect(mockUser.userName).toBeTruthy();
     expect(mockUser.password).toBeTruthy();
+    expect(mockUser.role).toBeTruthy();
     expect(mockUser.mail).toBeTruthy();
     expect(mockUser.createdAt).toBeTruthy();
-    expect(mockUser.role).toBeTruthy();
+
+    // Verify that userName length is between 6 and 16 characters
+    expect(mockUser.userName.length).toBeGreaterThanOrEqual(6);
+    expect(mockUser.userName.length).toBeLessThanOrEqual(16);
+
+    // Verify that password meets the passwordRegex criteria (this should be done in utility function but can be added here for extra assurance)
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    expect(passwordRegex.test(mockUser.password)).toBe(true);
+
+    // Verify the role is one of the allowed values
+    expect([PrismaUserRole.USER, PrismaUserRole.EMPLOYEE]).toContain(
+      mockUser.role
+    );
   });
 });
