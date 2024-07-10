@@ -47,7 +47,7 @@ export const getAllUsersService = async (): Promise<UserResponse[]> => {
 // eslint-disable-next-line complexity
 export const createUserService = async (
   userData: CreateUserDto
-): Promise<User> => {
+): Promise<UserResponse> => {
   // const encryptedPassword = await encryptPassword(userData.password);
 
   try {
@@ -90,6 +90,13 @@ export const createUserService = async (
           role: userData.role,
           createdAt: new Date(dayjs().toISOString()),
           updatedAt: null,
+        },
+        select: {
+          id: true,
+          userName: true,
+          mail: true,
+          role: true,
+          createdAt: true,
         },
       });
       logger.info('User created successfully', { user });
