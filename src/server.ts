@@ -1,10 +1,12 @@
+import { Server } from 'http';
+
 // eslint-disable-next-line import/no-cycle
 import app from './app.ts';
 import { connectDatabase } from './prisma.ts';
 import handleAppShutdown from './utils/handleAppShutdown.ts';
 import logger from './utils/logger.ts';
 
-const startServer = async (port: number): Promise<void> => {
+const startServer = async (port: number): Promise<Server> => {
   try {
     await connectDatabase();
     const server = app.listen(port, () => {
@@ -20,10 +22,10 @@ const startServer = async (port: number): Promise<void> => {
 
     handleAppShutdown(server);
 
-    await Promise.resolve();
+    return server;
   } catch (error) {
     logger.error('Failed to connect to database:', error);
-    await Promise.reject(error);
+    throw error;
   }
 };
 

@@ -1,16 +1,17 @@
-import { IncomingMessage, Server, ServerResponse } from 'http';
+import { Server } from 'http';
 import request from 'supertest';
 
 import app from '../../../../app.ts';
 import { User } from '../../../../models/User/user.ts';
-import { generateMockCreateUser } from '../../../../services/__mocks__/mockUsers.ts';
 import prisma from '../../../../prisma.ts';
+import { generateMockCreateUser } from '../../../../services/__mocks__/mockUsers.ts';
+import startServer from '../../../../server.ts';
 
 describe('createUserController', () => {
-  let server: Server<typeof IncomingMessage, typeof ServerResponse>;
+  let server: Server;
 
   beforeAll(async () => {
-    server = app.listen();
+    server = await startServer(Number(process.env.PORT));
   });
 
   afterAll(async () => {
