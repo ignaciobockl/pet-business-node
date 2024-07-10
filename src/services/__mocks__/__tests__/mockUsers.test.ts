@@ -16,6 +16,7 @@ describe('generateMockUsers', () => {
       expect(user.userName).toBeTruthy();
       expect(user.password).toBeTruthy();
       expect(user.mail).toBeTruthy();
+      expect(user.role).toBeTruthy();
       expect(user.createdAt).toBeTruthy();
       expect(user.updatedAt).toBeDefined();
 
@@ -24,8 +25,14 @@ describe('generateMockUsers', () => {
       } else expect(user.oldPassword).toBeDefined();
     });
 
+    // Verify specific roles for the mock users
     expect(mockUsers[0].role).toBe(PrismaUserRole.USER);
     expect(mockUsers[1].role).toBe(PrismaUserRole.EMPLOYEE);
+
+    // Additional checks for roles to ensure diversity
+    const roles = mockUsers.map((user) => user.role);
+    expect(roles).toContain(PrismaUserRole.USER);
+    expect(roles).toContain(PrismaUserRole.EMPLOYEE);
   });
 });
 
