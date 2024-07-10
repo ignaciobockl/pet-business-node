@@ -1,16 +1,16 @@
 import { Server } from 'http';
 import request from 'supertest';
 
-import app from '../../../../app.ts';
+import app, { startServer } from '../../../../app.ts';
 import { User } from '../../../../models/User/user.ts';
 import prisma from '../../../../prisma.ts';
 import { generateMockCreateUser } from '../../../../services/__mocks__/mockUsers.ts';
-import startServer from '../../../../server.ts';
 
 describe('createUserController', () => {
   let server: Server;
 
   beforeAll(async () => {
+    // await new Promise((resolve) => setTimeout(resolve, 100));
     server = await startServer(Number(process.env.PORT));
   });
 

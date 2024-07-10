@@ -7,10 +7,13 @@ import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
 import userRoutes from './routes/userRoutes.ts';
-// eslint-disable-next-line import/no-cycle
-import startServer from './server.ts';
+
 import handleProcessErrors from './utils/exceptionHandler.ts';
 import logger from './utils/logger.ts';
+import { Server } from 'http';
+import { connectDatabase } from './prisma.ts';
+import handleAppShutdown from './utils/handleAppShutdown.ts';
+import { unknown } from 'zod';
 
 const app = express();
 
@@ -45,6 +48,33 @@ handleProcessErrors();
 
 const PORT = Number(process.env.PORT) || 3000;
 
-startServer(PORT);
+export const startServer = async (port: number): Promise<Server> => {
+  try {
+    await connectDatabase();
+    const server = app.listen(port, () => {
+      const msg = `Server running in the environment ${process.env.NODE_ENV}, in the port ${port}`;
+      if (process.env.NODE_ENV === 'production') {
+        logger.info(msg);
+      } else if (process.env.NODE_ENV === 'test') {
+        logger.debug(msg);
+      } else {
+        logger.debug(msg);
+      }
+    });
+
+    handleAppShutdown(server);
+
+    return server;
+  } catch (error) {
+    logger.error('Failed to connect to database:', error);
+    throw error;
+  }
+};
+
+if (process.env.NODE_ENV !== 'test') {
+  startServer(PORT).catch((err) => {
+    logger.error('Server failed to start:', err);
+  });
+}
 
 export default app;
