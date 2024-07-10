@@ -8,14 +8,17 @@ import { generateMockCreateUser } from '../../../../services/__mocks__/mockUsers
 
 describe('createUserController', () => {
   let server: Server;
+  const testPort: number = Math.floor(1024 + Math.random() * 64511);
 
   beforeAll(async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 100));
-    server = await startServer(Number(process.env.PORT));
+    server = await startServer(testPort);
   });
 
   afterAll(async () => {
-    server.close();
+    if (server) {
+      await server.close();
+    }
+    await prisma.$disconnect();
   });
 
   afterEach(async () => {

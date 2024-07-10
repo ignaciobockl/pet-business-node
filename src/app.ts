@@ -3,17 +3,15 @@
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
+import { Server } from 'http';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import userRoutes from './routes/userRoutes.ts';
-
-import handleProcessErrors from './utils/exceptionHandler.ts';
-import logger from './utils/logger.ts';
-import { Server } from 'http';
 import { connectDatabase } from './prisma.ts';
+import userRoutes from './routes/userRoutes.ts';
+import handleProcessErrors from './utils/exceptionHandler.ts';
 import handleAppShutdown from './utils/handleAppShutdown.ts';
-import { unknown } from 'zod';
+import logger from './utils/logger.ts';
 
 const app = express();
 
