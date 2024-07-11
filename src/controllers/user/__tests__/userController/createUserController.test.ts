@@ -71,4 +71,18 @@ describe('createUserController', () => {
 
     expect(response.body.message).toMatch(/The entered email is invalid/);
   });
+
+  it('should return validation error for short username', async () => {
+    const userData = await generateMockCreateUser();
+    userData.userName = 'short';
+
+    const response = await request(app)
+      .post('/api/user')
+      .send(userData)
+      .expect(400);
+
+    expect(response.body.message).toMatch(
+      /Username must be at least 6 characters long/
+    );
+  });
 });
