@@ -59,4 +59,16 @@ describe('createUserController', () => {
 
     expect(response.body.message).toMatch(/Missing required fields/);
   });
+
+  it('should return validation error for invalid email', async () => {
+    const userData = await generateMockCreateUser();
+    userData.mail = 'invalid-email';
+
+    const response = await request(app)
+      .post('/api/user')
+      .send(userData)
+      .expect(400);
+
+    expect(response.body.message).toMatch(/The entered email is invalid/);
+  });
 });
