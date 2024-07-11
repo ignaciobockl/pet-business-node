@@ -96,6 +96,17 @@ export const createUserController = async (
           message: error.message,
           status: 400,
         });
+      } else if (
+        error.message.includes(
+          'Cannot create a user with the administrator role'
+        )
+      ) {
+        // Handle admin role error specifically
+        handleResponse(res, {
+          data: null,
+          message: error.message,
+          status: 400,
+        });
       } else {
         const statusCode = getStatusCode(error);
         handleResponse(res, {

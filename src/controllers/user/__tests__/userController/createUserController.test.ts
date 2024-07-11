@@ -1,3 +1,4 @@
+import { UserRole as PrismaUserRole } from '@prisma/client';
 import { Server } from 'http';
 import request from 'supertest';
 
@@ -30,8 +31,7 @@ describe('createUserController', () => {
   });
 
   afterEach(async () => {
-    // ! deshabilitar temporalmente mientras se realizan los test
-    // await prisma.user.deleteMany();
+    await prisma.user.deleteMany();
   });
 
   it('should create a user correctly', async () => {
@@ -97,5 +97,19 @@ describe('createUserController', () => {
       .expect(400);
 
     expect(response.body.message).toMatch(/User with email .+ already exists/);
+  });
+
+  it('should return error for admin role', async () => {
+    const userData = await generateMockCreateUser();
+    userData.role = PrismaUserRole.ADMIN;
+
+    const response = await request(app)
+      .post('/api/user')
+      .send(userData)
+      .expect(400);
+
+    expect(response.body.message).toMatch(
+      /Cannot create a user with the administrator role/
+    );
   });
 });
