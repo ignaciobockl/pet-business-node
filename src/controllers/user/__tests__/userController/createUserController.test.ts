@@ -85,4 +85,17 @@ describe('createUserController', () => {
       /Username must be at least 6 characters long/
     );
   });
+
+  it('should return error for duplicate email', async () => {
+    const userData = await generateMockCreateUser();
+
+    await request(app).post('/api/user').send(userData).expect(201);
+
+    const response = await request(app)
+      .post('/api/user')
+      .send(userData)
+      .expect(400);
+
+    expect(response.body.message).toMatch(/User with email .+ already exists/);
+  });
 });
