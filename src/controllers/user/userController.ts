@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 
 import handleUserSpecificErrors from '../../middleware/user/handleUserSpecificErrors.ts';
+import validateRequiredFields from '../../middleware/user/validateRequiredFields.ts';
 import {
   createUserService,
   getAllUsersService,
 } from '../../services/userService.ts';
-import createValidationError from '../../utils/errors.ts';
 import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
@@ -47,7 +47,6 @@ export const getAllUsersController = async (
   }
 };
 
-// eslint-disable-next-line complexity
 export const createUserController = async (
   req: Request,
   res: Response
@@ -56,16 +55,7 @@ export const createUserController = async (
   try {
     const { userName, password, mail, role } = req.body;
 
-    const missingFields = [];
-    if (!userName) missingFields.push('userName');
-    if (!password) missingFields.push('password');
-    if (!mail) missingFields.push('mail');
-    if (!role) missingFields.push('role');
-
-    if (missingFields.length > 0) {
-      const errorMessage = `Missing required fields: ${missingFields.join(', ')}`;
-      throw createValidationError(errorMessage, undefined, missingFields);
-    }
+    validateRequiredFields(req.body);
 
     const newUser = await createUserService({
       userName,
