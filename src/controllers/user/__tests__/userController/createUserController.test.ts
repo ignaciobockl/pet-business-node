@@ -6,6 +6,14 @@ import { User } from '../../../../models/User/user.ts';
 import prisma from '../../../../prisma.ts';
 import { generateMockCreateUser } from '../../../../services/__mocks__/mockUsers.ts';
 
+// Define User type with optional properties for testing purposes
+type PartialUser = {
+  userName?: string;
+  password?: string;
+  mail?: string;
+  role?: string;
+};
+
 describe('createUserController', () => {
   let server: Server;
   const testPort: number = Math.floor(1024 + Math.random() * 64511);
@@ -22,7 +30,8 @@ describe('createUserController', () => {
   });
 
   afterEach(async () => {
-    await prisma.user.deleteMany();
+    // ! deshabilitar temporalmente mientras se realizan los test
+    // await prisma.user.deleteMany();
   });
 
   it('should create a user correctly', async () => {
@@ -37,5 +46,17 @@ describe('createUserController', () => {
     expect(response.body.data.userName).toBe(userData.userName);
     expect(response.body.data.mail).toBe(userData.mail);
     expect(response.body.data.role).toBe(userData.role);
+  });
+
+  it('should return validation error for missing fields', async () => {
+    const userData: PartialUser = await generateMockCreateUser();
+    delete userData.userName;
+
+    const response = await request(app)
+      .post('/api/user')
+      .send(userData)
+      .expect(400);
+
+    expect(response.body.message).toMatch(/Missing required fields/);
   });
 });
