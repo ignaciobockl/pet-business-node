@@ -89,6 +89,13 @@ export const createUserController = async (
           message: error.message,
           status: 400,
         });
+      } else if (error.message.includes('User with email')) {
+        // Handle duplicate email error specifically
+        handleResponse(res, {
+          data: null,
+          message: error.message,
+          status: 400,
+        });
       } else {
         const statusCode = getStatusCode(error);
         handleResponse(res, {
