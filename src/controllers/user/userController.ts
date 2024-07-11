@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { getStatusCode } from '../../middleware/errorHandler.ts';
+import handleUserSpecificErrors from '../../middleware/user/handleUserSpecificErrors.ts';
 import {
   createUserService,
   getAllUsersService,
@@ -83,38 +83,7 @@ export const createUserController = async (
   } catch (error) {
     logger.error('Error creating user:', error);
     if (error instanceof Error) {
-      if (error.name === 'ValidationError') {
-        handleResponse(res, {
-          data: null,
-          message: error.message,
-          status: 400,
-        });
-      } else if (error.message.includes('User with email')) {
-        // Handle duplicate email error specifically
-        handleResponse(res, {
-          data: null,
-          message: error.message,
-          status: 400,
-        });
-      } else if (
-        error.message.includes(
-          'Cannot create a user with the administrator role'
-        )
-      ) {
-        // Handle admin role error specifically
-        handleResponse(res, {
-          data: null,
-          message: error.message,
-          status: 400,
-        });
-      } else {
-        const statusCode = getStatusCode(error);
-        handleResponse(res, {
-          data: null,
-          message: error.message,
-          status: statusCode,
-        });
-      }
+      handleUserSpecificErrors(error, res);
     } else {
       handleResponse(res, {
         data: null,
