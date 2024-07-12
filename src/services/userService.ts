@@ -1,6 +1,7 @@
 import { UserRole as PrismaUserRole } from '@prisma/client';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
+import { ZodError } from 'zod';
 
 import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
@@ -21,7 +22,13 @@ const createUserService = async (
       // Validate user data using Zod
       CreateUserSchema.parse(userData);
     } catch (validationError) {
-      const errorMessage = `Validation error creating user: ${validationError instanceof Error ? validationError.message : 'Validation error occurred'}`;
+      let errorMessage = 'Validation error creating user';
+      if (validationError instanceof ZodError) {
+        const issues = validationError.issues
+          .map((issue) => issue.message)
+          .join(', ');
+        errorMessage = `Validation error creating user: ${issues}`;
+      }
       logger.error(errorMessage, { validationError });
       throw createValidationError(errorMessage, validationError);
     }
