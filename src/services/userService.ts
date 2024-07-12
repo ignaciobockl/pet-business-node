@@ -10,42 +10,8 @@ import { encryptPassword } from '../utils/encryption.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
 
-export const getAllUsersService = async (): Promise<UserResponse[]> => {
-  try {
-    const users: User[] = await prisma.user.findMany();
-
-    users.forEach((user) => {
-      try {
-        UserSchema.parse(user);
-      } catch (validationError) {
-        logger.error('Validation error for user:', { user, validationError });
-        throw createValidationError(
-          `Validation error for user with ID ${user.id}`
-        );
-      }
-    });
-
-    const usersResponse: UserResponse[] = users.map((user) => ({
-      id: user.id,
-      userName: user.userName,
-      role: user.role,
-      mail: user.mail,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt || null,
-    }));
-    logger.info('Users retrieved successfully');
-    return usersResponse;
-  } catch (error) {
-    logger.error('Error retrieving users:', error);
-    if (error instanceof Error && error.name === 'ValidationError') {
-      throw error;
-    }
-    throw new Error('Unable to retrieve users');
-  }
-};
-
 // eslint-disable-next-line complexity
-export const createUserService = async (
+const createUserService = async (
   userData: CreateUserDto
 ): Promise<UserResponse> => {
   // const encryptedPassword = await encryptPassword(userData.password);
@@ -116,6 +82,69 @@ export const createUserService = async (
   }
 };
 
+const getAllUsersService = async (): Promise<UserResponse[]> => {
+  try {
+    const users: User[] = await prisma.user.findMany();
+
+    users.forEach((user) => {
+      try {
+        UserSchema.parse(user);
+      } catch (validationError) {
+        logger.error('Validation error for user:', { user, validationError });
+        throw createValidationError(
+          `Validation error for user with ID ${user.id}`
+        );
+      }
+    });
+
+    const usersResponse: UserResponse[] = users.map((user) => ({
+      id: user.id,
+      userName: user.userName,
+      role: user.role,
+      mail: user.mail,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt || null,
+    }));
+    logger.info('Users retrieved successfully');
+    return usersResponse;
+  } catch (error) {
+    logger.error('Error retrieving users:', error);
+    if (error instanceof Error && error.name === 'ValidationError') {
+      throw error;
+    }
+    throw new Error('Unable to retrieve users');
+  }
+};
+
+const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
+  try {
+    const user: UserResponse | null = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        userName: true,
+        role: true,
+        mail: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      logger.info(`User with id ${id} not found`);
+      return null;
+    }
+
+    logger.info(`User with id ${id} retrieved successfully`);
+    return user;
+  } catch (error) {
+    logger.error('Error retrieving user:', error);
+    throw new Error('Error retrieving user');
+  }
+};
+
 // TODO: login
 // export const loginUser = async (userName: string, password: string): Promise<User | null> => {
 //   const user = await prisma.user.findUnique({
@@ -136,3 +165,5 @@ export const createUserService = async (
 
 //   return user;
 // };
+
+export { createUserService, getAllUsersService, getUserByIdService };
