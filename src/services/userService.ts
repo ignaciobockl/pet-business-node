@@ -1,6 +1,6 @@
 import { UserRole as PrismaUserRole } from '@prisma/client';
 import dayjs from 'dayjs';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { ZodError } from 'zod';
 
 import { CreateUserDto } from '../models/types/user.js';
@@ -125,7 +125,7 @@ const getAllUsersService = async (): Promise<UserResponse[]> => {
 };
 
 const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
-  if (!id) {
+  if (!id || !isUUID(id)) {
     const errorMessage = 'Invalid user ID';
     logger.error(errorMessage);
     throw new Error(errorMessage);
