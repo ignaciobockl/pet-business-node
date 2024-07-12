@@ -11,7 +11,6 @@ describe('getUserByIdService', () => {
 
   beforeAll(async () => {
     createUser = await generateMockCreateUser();
-    console.log('🎆 ~ beforeAll ~ createUser:', createUser);
 
     // Clean the database before starting tests
     await prisma.user.deleteMany();
@@ -29,5 +28,11 @@ describe('getUserByIdService', () => {
     const result = await getUserByIdService(newUser.id);
 
     expect(result).toEqual(newUser);
+  });
+
+  it('should return null for a non-existing user', async () => {
+    const result = await getUserByIdService('non-existing-id');
+
+    expect(result).toBeNull();
   });
 });
