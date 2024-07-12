@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { User, UserResponse } from '../../../models/User/user.ts';
 import prisma from '../../../prisma.ts';
 import { generateMockCreateUser } from '../../__mocks__/mockUsers.ts';
@@ -40,7 +42,7 @@ describe('getUserByIdService', () => {
   });
 
   it('should return null for a non-existing user', async () => {
-    const result = await getUserByIdService('non-existing-id');
+    const result = await getUserByIdService(uuidv4());
 
     expect(result).toBeNull();
   });
