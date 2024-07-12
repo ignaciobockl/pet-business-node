@@ -125,6 +125,12 @@ const getAllUsersService = async (): Promise<UserResponse[]> => {
 };
 
 const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
+  if (!id) {
+    const errorMessage = 'Invalid user ID';
+    logger.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+
   try {
     const user: UserResponse | null = await prisma.user.findUnique({
       where: {
