@@ -5,49 +5,12 @@ import validateRequiredFields from '../../middleware/user/validateRequiredFields
 import {
   createUserService,
   getAllUsersService,
+  getUserByIdService,
 } from '../../services/userService.ts';
 import logger from '../../utils/logger.ts';
 import handleResponse from '../../utils/responseHandler.ts';
 
-export const getAllUsersController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const users = await getAllUsersService();
-
-    // Validar los datos obtenidos
-    users.forEach((user) => {
-      if (!user.id || typeof user.id !== 'string') {
-        const errorMessage = `Validation error for user with ID ${user.id}`;
-        logger.error(errorMessage);
-        throw new Error(errorMessage);
-      }
-    });
-
-    handleResponse(res, {
-      data: users,
-      message: 'Users retrieved successfully',
-      status: 200,
-    });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      handleResponse(res, {
-        data: null,
-        message: error.message || 'Unable to retrieve users',
-        status: 500,
-      });
-    } else {
-      handleResponse(res, {
-        data: null,
-        message: 'Internal Server Error',
-        status: 500,
-      });
-    }
-  }
-};
-
-export const createUserController = async (
+const createUserController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -83,3 +46,85 @@ export const createUserController = async (
     }
   }
 };
+
+const getAllUsersController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const users = await getAllUsersService();
+
+    users.forEach((user) => {
+      if (!user.id || typeof user.id !== 'string') {
+        const errorMessage = `Validation error for user with ID ${user.id}`;
+        logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+    });
+
+    handleResponse(res, {
+      data: users,
+      message: 'Users retrieved successfully',
+      status: 200,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      handleResponse(res, {
+        data: null,
+        message: error.message || 'Unable to retrieve users',
+        status: 500,
+      });
+    } else {
+      handleResponse(res, {
+        data: null,
+        message: 'Internal Server Error',
+        status: 500,
+      });
+    }
+  }
+};
+
+const getUserByIdController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  logger.info(`Incoming request: ${req.method} ${req.url}`);
+  const { id } = req.params;
+
+  try {
+    const user = await getUserByIdService(id);
+
+    if (!user) {
+      handleResponse(res, {
+        data: null,
+        message: 'User not found',
+        status: 404,
+      });
+      return;
+    }
+
+    handleResponse(res, {
+      data: user,
+      message: 'User retrieved successfully',
+      status: 200,
+    });
+    logger.info(`User with id ${id} retrieved successfully`);
+  } catch (error) {
+    logger.error('Error retrieving user:', error);
+    if (error instanceof Error) {
+      handleResponse(res, {
+        data: null,
+        message: error.message || 'Internal Server Error',
+        status: 500,
+      });
+    } else {
+      handleResponse(res, {
+        data: null,
+        message: 'Internal Server Error',
+        status: 500,
+      });
+    }
+  }
+};
+
+export { createUserController, getAllUsersController, getUserByIdController };
