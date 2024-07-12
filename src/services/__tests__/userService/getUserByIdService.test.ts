@@ -49,4 +49,12 @@ describe('getUserByIdService', () => {
     await expect(getUserByIdService('')).rejects.toThrow('Invalid user ID');
     expect(findUniqueSpy).not.toHaveBeenCalled();
   });
+
+  it('should throw an error for an incorrectly formatted ID', async () => {
+    const invalidId = 'invalid-id-format';
+    await expect(getUserByIdService(invalidId)).rejects.toThrow(
+      'Invalid user ID'
+    );
+    expect(findUniqueSpy).not.toHaveBeenCalled();
+  });
 });
