@@ -17,7 +17,6 @@ describe('getUserByIdService', () => {
     await prisma.user.deleteMany();
 
     newUser = await createUserService(createUser);
-    console.log('🥤 ~ beforeAll ~ newUser:', newUser);
   });
 
   //   afterAll(async () => {
