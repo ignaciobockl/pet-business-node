@@ -7,6 +7,7 @@ jest.mock('../../../utils/logger.ts');
 
 describe('getUserByIdService', () => {
   let createUser: User;
+  let findUniqueSpy: jest.SpyInstance;
   let newUser: UserResponse;
 
   beforeAll(async () => {
@@ -16,6 +17,14 @@ describe('getUserByIdService', () => {
     await prisma.user.deleteMany();
 
     newUser = await createUserService(createUser);
+  });
+
+  beforeEach(() => {
+    findUniqueSpy = jest.spyOn(prisma.user, 'findUnique');
+  });
+
+  afterEach(() => {
+    findUniqueSpy.mockRestore();
   });
 
   //   afterAll(async () => {
@@ -34,5 +43,10 @@ describe('getUserByIdService', () => {
     const result = await getUserByIdService('non-existing-id');
 
     expect(result).toBeNull();
+  });
+
+  it('should throw an error for an invalid ID', async () => {
+    await expect(getUserByIdService('')).rejects.toThrow('Invalid user ID');
+    expect(findUniqueSpy).not.toHaveBeenCalled();
   });
 });
