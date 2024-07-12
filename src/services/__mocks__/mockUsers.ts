@@ -29,6 +29,7 @@ export const generateMockUsers = async (): Promise<User[]> => {
       role: UserRole.USER,
       mail: 'john@example.com',
       createdAt: currentDateISO,
+      // TODO: debe ser un array de string
       updatedAt: new Date(),
     },
     {
@@ -64,6 +65,7 @@ export const generateMockCreateUser = async (): Promise<User> => {
     role: faker.helpers.arrayElement([UserRole.USER, UserRole.EMPLOYEE]),
     mail: faker.internet.email().toLowerCase(),
     createdAt: currentDateISO,
+    updatedAt: null,
   };
   return mockUsers;
 };

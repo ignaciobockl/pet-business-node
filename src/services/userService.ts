@@ -63,6 +63,7 @@ const createUserService = async (
           mail: true,
           role: true,
           createdAt: true,
+          updatedAt: true,
         },
       });
       logger.info('User created successfully', { user });
