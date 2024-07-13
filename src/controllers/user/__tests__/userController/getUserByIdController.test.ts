@@ -10,6 +10,7 @@ import { createUserService } from '../../../../services/userService.ts';
 
 describe('getUserByIdController', () => {
   let createUser: User;
+
   let newUser: UserResponse;
   let server: Server;
   const testPort: number = Math.floor(1024 + Math.random() * 64511);
@@ -71,5 +72,18 @@ describe('getUserByIdController', () => {
       .expect(404);
 
     expect(response.body).toHaveProperty('message', 'User not found');
+  });
+
+  it('should handle internal server errors', async () => {
+    // Simulates an internal error in the database
+    jest
+      .spyOn(prisma.user, 'findUnique')
+      .mockRejectedValueOnce(new Error('DataBase Error'));
+
+    const response = await request(app)
+      .get('/api/user/' + newUser.id)
+      .expect(500);
+
+    expect(response.body).toHaveProperty('message', 'Internal Server Error');
   });
 });
