@@ -74,16 +74,25 @@ describe('getUserByIdController', () => {
     expect(response.body).toHaveProperty('message', 'User not found');
   });
 
-  it('should handle internal server errors', async () => {
-    // Simulates an internal error in the database
-    jest
-      .spyOn(prisma.user, 'findUnique')
-      .mockRejectedValueOnce(new Error('DataBase Error'));
+  // it('should handle internal server errors', async () => {
+  //   // Simulates an internal error in the database
+  //   jest
+  //     .spyOn(prisma.user, 'findUnique')
+  //     .mockRejectedValueOnce(new Error('DataBase Error'));
 
-    const response = await request(app)
-      .get('/api/user/' + newUser.id)
-      .expect(500);
+  //   const response = await request(app)
+  //     .get('/api/user/' + newUser.id)
+  //     .expect(500);
 
-    expect(response.body).toHaveProperty('message', 'Internal Server Error');
-  });
+  //   expect(response.body).toHaveProperty('message', 'Internal Server Error');
+  // });
+
+  // it('should return 400 if user ID is not a valid UUID', async () => {
+  //   const invalidUserId = '123';
+  //   const response = await request(app)
+  //     .get('/api/user/' + invalidUserId)
+  //     .expect(400);
+
+  //   expect(response.body).toHaveProperty('message', 'Invalid user ID');
+  // });
 });

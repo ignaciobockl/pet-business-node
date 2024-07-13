@@ -84,6 +84,7 @@ const getAllUsersController = async (
   }
 };
 
+// eslint-disable-next-line complexity
 const getUserByIdController = async (
   req: Request,
   res: Response
@@ -111,15 +112,25 @@ const getUserByIdController = async (
     logger.info(`User with id ${id} retrieved successfully`);
   } catch (error) {
     logger.error('Error retrieving user:', error);
-    if (
-      error instanceof Error &&
-      error.message.includes('Error retrieving user')
-    ) {
-      handleResponse(res, {
-        data: null,
-        message: error.message,
-        status: 404,
-      });
+    if (error instanceof Error) {
+      if (
+        error.name === 'InvalidUserIDError' ||
+        error.name === 'UserNotFoundError'
+      ) {
+        handleResponse(res, {
+          data: null,
+          message: error.message,
+          status: 400,
+        });
+      }
+
+      if (error.message.includes('Error retrieving user')) {
+        handleResponse(res, {
+          data: null,
+          message: error.message,
+          status: 404,
+        });
+      }
     } else {
       handleResponse(res, {
         data: null,

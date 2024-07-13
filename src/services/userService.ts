@@ -1,4 +1,4 @@
-import { Prisma, UserRole as PrismaUserRole } from '@prisma/client';
+import { UserRole as PrismaUserRole } from '@prisma/client';
 import dayjs from 'dayjs';
 import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { ZodError } from 'zod';
@@ -126,13 +126,15 @@ const getAllUsersService = async (): Promise<UserResponse[]> => {
 
 // eslint-disable-next-line complexity
 const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
-  if (!id || !isUUID(id)) {
-    const errorMessage = 'Invalid user ID';
-    logger.error(errorMessage);
-    throw new Error(errorMessage);
-  }
-
   try {
+    if (!id || !isUUID(id)) {
+      const errorMessage = 'Invalid user ID';
+      logger.error(errorMessage);
+      const error = new Error(errorMessage);
+      error.name = 'InvalidUserIDError';
+      throw error;
+    }
+
     const user: UserResponse | null = await prisma.user.findUnique({
       where: {
         id,
@@ -148,16 +150,25 @@ const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
     });
 
     if (!user) {
-      logger.info(`User with id ${id} not found`);
+      const errorMessage = `User with id ${id} not found`;
+      logger.error(errorMessage);
+      const error = new Error(errorMessage);
+      error.name = 'UserNotFoundError';
       return null;
     }
 
     logger.info(`User with id ${id} retrieved successfully`);
     return user;
   } catch (error) {
-    const errorMessage = (error as Error).message;
+    const typedError = error as Error;
+    const errorMessage = typedError.message;
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
+      typedError.name === 'InvalidUserIDError' ||
+      typedError.name === 'UserNotFoundError'
+    ) {
+      logger.error(`Error retrieving user with ID ${id}: ${errorMessage}`);
+      throw error;
+    } else if (
       errorMessage.includes('Internal server error') ||
       errorMessage.includes('DataBase Error')
     ) {
