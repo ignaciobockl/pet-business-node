@@ -122,12 +122,16 @@ const getUserByIdController = async (
           message: error.message,
           status: 400,
         });
-      }
-
-      if (error.message.includes('Error retrieving user')) {
+      } else if (error.message === 'Internal Server Error') {
         handleResponse(res, {
           data: null,
-          message: error.message,
+          message: 'Internal Server Error',
+          status: 500,
+        });
+      } else {
+        handleResponse(res, {
+          data: null,
+          message: 'Error retrieving user',
           status: 404,
         });
       }

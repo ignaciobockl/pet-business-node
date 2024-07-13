@@ -169,7 +169,7 @@ const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
       logger.error(`Error retrieving user with ID ${id}: ${errorMessage}`);
       throw error;
     } else if (
-      errorMessage.includes('Internal server error') ||
+      errorMessage.includes('Internal Server Error') ||
       errorMessage.includes('DataBase Error')
     ) {
       logger.error(`Database error: ${errorMessage}`);
