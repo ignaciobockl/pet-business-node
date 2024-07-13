@@ -29,11 +29,11 @@ describe('getUserByIdService', () => {
     findUniqueSpy.mockRestore();
   });
 
-  //   afterAll(async () => {
-  //     // Clean database after testing
-  //     await prisma.user.deleteMany();
-  //     await prisma.$disconnect();
-  //   });
+  afterAll(async () => {
+    // Clean database after testing
+    await prisma.user.deleteMany();
+    await prisma.$disconnect();
+  });
 
   it('should return user details when user exists', async () => {
     const result = await getUserByIdService(newUser.id);
