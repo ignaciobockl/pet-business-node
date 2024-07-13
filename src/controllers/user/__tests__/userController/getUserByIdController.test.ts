@@ -87,12 +87,12 @@ describe('getUserByIdController', () => {
     expect(response.body).toHaveProperty('message', 'Internal Server Error');
   });
 
-  // it('should return 400 if user ID is not a valid UUID', async () => {
-  //   const invalidUserId = '123';
-  //   const response = await request(app)
-  //     .get('/api/user/' + invalidUserId)
-  //     .expect(400);
+  it('should return 400 if user ID is not a valid UUID', async () => {
+    const invalidUserId = '123';
+    const response = await request(app)
+      .get('/api/user/' + invalidUserId)
+      .expect(400);
 
-  //   expect(response.body).toHaveProperty('message', 'Invalid user ID');
-  // });
+    expect(response.body).toHaveProperty('message', 'Invalid user ID');
+  });
 });
