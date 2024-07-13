@@ -1,5 +1,6 @@
 import { Server } from 'http';
 import request from 'supertest';
+import { v4 as uuidv4 } from 'uuid';
 
 import app, { startServer } from '../../../../app.ts';
 import { User, UserResponse } from '../../../../models/User/user.ts';
@@ -61,5 +62,14 @@ describe('getUserByIdController', () => {
 
     // Verify certain fields contain information
     expect(response.body.data.createdAt).toBeTruthy();
+  });
+
+  it('should return 404 if user does not exist', async () => {
+    const nonExistingUserId = uuidv4();
+    const response = await request(app)
+      .get('/api/user/' + nonExistingUserId)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('message', 'User not found');
   });
 });
