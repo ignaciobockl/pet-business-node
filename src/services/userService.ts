@@ -1,4 +1,4 @@
-import { UserRole as PrismaUserRole } from '@prisma/client';
+import { Prisma, UserRole as PrismaUserRole } from '@prisma/client';
 import dayjs from 'dayjs';
 import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { ZodError } from 'zod';
@@ -124,6 +124,7 @@ const getAllUsersService = async (): Promise<UserResponse[]> => {
   }
 };
 
+// eslint-disable-next-line complexity
 const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
   if (!id || !isUUID(id)) {
     const errorMessage = 'Invalid user ID';
@@ -154,8 +155,18 @@ const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
     logger.info(`User with id ${id} retrieved successfully`);
     return user;
   } catch (error) {
-    logger.error('Error retrieving user:', error);
-    throw new Error('Error retrieving user');
+    const errorMessage = (error as Error).message;
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      errorMessage.includes('Internal server error') ||
+      errorMessage.includes('DataBase Error')
+    ) {
+      logger.error(`Database error: ${errorMessage}`);
+      throw new Error('Internal Server Error');
+    } else {
+      logger.error(`Error retrieving user with ID ${id}: ${errorMessage}`);
+      throw new Error('Error retrieving user');
+    }
   }
 };
 

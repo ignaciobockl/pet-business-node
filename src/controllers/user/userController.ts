@@ -111,11 +111,14 @@ const getUserByIdController = async (
     logger.info(`User with id ${id} retrieved successfully`);
   } catch (error) {
     logger.error('Error retrieving user:', error);
-    if (error instanceof Error) {
+    if (
+      error instanceof Error &&
+      error.message.includes('Error retrieving user')
+    ) {
       handleResponse(res, {
         data: null,
-        message: error.message || 'Internal Server Error',
-        status: 500,
+        message: error.message,
+        status: 404,
       });
     } else {
       handleResponse(res, {
