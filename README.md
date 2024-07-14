@@ -18,6 +18,7 @@ To effectively contribute to this project, you should have knowledge of the foll
 - **dotenv**: Loads environment variables from a `.env` file.
 - **pnpm**: Fast, disk space efficient package manager.
 - **Git**: Version control system.
+- **JSON Web Tokens (JWT)**: Used for secure authentication and authorization within the application. Ensure familiarity with generating, verifying, and managing JWTs, and understand the importance of the `JWT_SECRET` environment variable for securely signing tokens.
 
 These technologies are fundamental to understanding and contributing to the Pet Business Backend project.
 
@@ -72,12 +73,15 @@ Ensure you have the following environment variables set up. You can copy them fr
 
 - `NODE_ENV=dev`
 - `DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"`
+- `JWT_SECRET=<your-secret-key>`
 - `PORT=<port-number>`
 - `SALT_ROUNDS=<salt-number>`
 
 Replace `<port-number>` with the desired port for running the server.
 
 Replace `<salt-number>`, the recommended number is 10 but you can implement the desired one, consider that the higher the number the more it consumes resources but you get better security.
+
+`JWT_SECRET` should be a long, random string used to sign JSON Web Tokens (JWTs) for authentication and authorization.
 
 ## Scripts
 
