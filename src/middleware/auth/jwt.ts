@@ -5,6 +5,15 @@ import { User } from '../../models/User/user.ts';
 
 interface Payload extends User {}
 
+/**
+ * Middleware to authenticate JWT.
+ * Verifies the JWT token in the Authorization header and assigns the decoded user to req.user.
+ * If the token is valid, calls next(); if not, returns an authorization error.
+ * @param req - Express request object.
+ * @param res - Express response object.
+ * @param next - Next middleware function.
+ * @returns Promise resolving to void or Response, or undefined if token is valid.
+ */
 const authenticateJWT = async (
   req: Request,
   res: Response,
@@ -29,11 +38,25 @@ const authenticateJWT = async (
   }
 };
 
+/**
+ * Generates a JWT token using the provided user data.
+ * @param payload - User data to include in the JWT token.
+ * @returns Signed JWT token.
+ */
 const generateJWT = (payload: Payload): string =>
   jwt.sign(payload, process.env.JWT_SECRET as string, {
     expiresIn: '1h',
   });
 
+/**
+ * Middleware to require JWT authentication on protected routes.
+ * Verifies the JWT token in the Authorization header and assigns the decoded user to req.user.
+ * If the token is valid, calls next(); if not, returns an authorization error.
+ * @param req - Express request object.
+ * @param res - Express response object.
+ * @param next - Next middleware function.
+ * @returns void or Response if token is invalid.
+ */
 const requireAuth = (
   req: Request,
   res: Response,
