@@ -1,26 +1,30 @@
 import { NextFunction, Request, Response } from 'express';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
-import ErrorCode from '../enums/errorCodes.ts';
 import logger from '../utils/logger.ts';
-
-/**
- * Mapping of error names to HTTP status codes.
- */
-const errorNameToStatusCode: Record<string, number> = {
-  ValidationError: ErrorCode.VALIDATION_ERROR,
-  UnauthorizedError: ErrorCode.UNAUTHORIZED_ERROR,
-  ForbiddenError: ErrorCode.FORBIDDEN_ERROR,
-  NotFoundError: ErrorCode.NOT_FOUND_ERROR,
-  ServiceUnavailableError: ErrorCode.SERVICE_UNAVAILABLE_ERROR,
-};
 
 /**
  * Helper function to get the appropriate HTTP status code for an error.
  * @param {Error} err The error for which to get the status code.
  * @returns {number} The HTTP status code.
  */
-export const getStatusCode = (err: Error): number =>
-  errorNameToStatusCode[err.name] || ErrorCode.INTERNAL_SERVER_ERROR;
+// eslint-disable-next-line complexity
+export const getStatusCode = (err: Error): number => {
+  switch (err.name) {
+    case 'ValidationError':
+      return StatusCodes.BAD_REQUEST;
+    case 'UnauthorizedError':
+      return StatusCodes.UNAUTHORIZED;
+    case 'ForbiddenError':
+      return StatusCodes.FORBIDDEN;
+    case 'NotFoundError':
+      return StatusCodes.NOT_FOUND;
+    case 'ServiceUnavailableError':
+      return StatusCodes.SERVICE_UNAVAILABLE;
+    default:
+      return StatusCodes.INTERNAL_SERVER_ERROR;
+  }
+};
 
 /**
  * Helper function to get the appropriate error message for an error.
@@ -28,7 +32,7 @@ export const getStatusCode = (err: Error): number =>
  * @returns {string} The error message.
  */
 const getErrorMessage = (err: Error): string =>
-  err.message || 'Internal Server Error';
+  err.message || ReasonPhrases.INTERNAL_SERVER_ERROR;
 
 /**
  * Middleware to handle errors in requests.
