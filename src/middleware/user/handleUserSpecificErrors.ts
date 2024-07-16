@@ -1,37 +1,19 @@
 import { Response } from 'express';
-
-import handleResponse from '../../utils/responseHandler.ts';
-import { getStatusCode } from '../errorHandler.ts';
+import { StatusCodes } from 'http-status-codes';
 
 const handleUserSpecificErrors = (error: Error, res: Response): void => {
-  if (error.name === 'ValidationError') {
-    handleResponse(res, {
-      data: null,
-      message: error.message,
-      status: 400,
-    });
-  } else if (error.message.includes('User with email')) {
-    handleResponse(res, {
-      data: null,
-      message: error.message,
-      status: 400,
-    });
-  } else if (
+  let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+  let errorMessage = error.message;
+
+  if (
+    error.name === 'ValidationError' ||
+    error.message.includes('User with email') ||
     error.message.includes('Cannot create a user with the administrator role')
   ) {
-    handleResponse(res, {
-      data: null,
-      message: error.message,
-      status: 400,
-    });
-  } else {
-    const statusCode = getStatusCode(error);
-    handleResponse(res, {
-      data: null,
-      message: error.message,
-      status: statusCode,
-    });
+    statusCode = StatusCodes.BAD_REQUEST;
   }
+
+  res.status(statusCode).json({ error: errorMessage });
 };
 
 export default handleUserSpecificErrors;
