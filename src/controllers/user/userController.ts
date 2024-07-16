@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import handleUserSpecificErrors from '../../middleware/user/handleUserSpecificErrors.ts';
 import validateRequiredFields from '../../middleware/user/validateRequiredFields.ts';
@@ -30,7 +31,7 @@ const createUserController = async (
     handleResponse(res, {
       data: newUser,
       message: 'User created successfully',
-      status: 201,
+      status: StatusCodes.CREATED,
     });
     logger.info(`User ${userName} successfully created`);
   } catch (error) {
@@ -41,7 +42,7 @@ const createUserController = async (
       handleResponse(res, {
         data: null,
         message: 'Internal Server Error',
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -65,20 +66,21 @@ const getAllUsersController = async (
     handleResponse(res, {
       data: users,
       message: 'Users retrieved successfully',
-      status: 200,
+      status: StatusCodes.OK,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
+      // TODO: deberia ser 400
       handleResponse(res, {
         data: null,
         message: error.message || 'Unable to retrieve users',
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       });
     } else {
       handleResponse(res, {
         data: null,
         message: 'Internal Server Error',
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -99,7 +101,7 @@ const getUserByIdController = async (
       handleResponse(res, {
         data: null,
         message: 'User not found',
-        status: 404,
+        status: StatusCodes.NOT_FOUND,
       });
       return;
     }
@@ -107,7 +109,7 @@ const getUserByIdController = async (
     handleResponse(res, {
       data: user,
       message: 'User retrieved successfully',
-      status: 200,
+      status: StatusCodes.OK,
     });
     logger.info(`User with id ${id} retrieved successfully`);
   } catch (error) {
@@ -120,26 +122,26 @@ const getUserByIdController = async (
         handleResponse(res, {
           data: null,
           message: error.message,
-          status: 400,
+          status: StatusCodes.BAD_REQUEST,
         });
       } else if (error.message === 'Internal Server Error') {
         handleResponse(res, {
           data: null,
           message: 'Internal Server Error',
-          status: 500,
+          status: StatusCodes.INTERNAL_SERVER_ERROR,
         });
       } else {
         handleResponse(res, {
           data: null,
           message: 'Error retrieving user',
-          status: 404,
+          status: StatusCodes.NOT_FOUND,
         });
       }
     } else {
       handleResponse(res, {
         data: null,
         message: 'Internal Server Error',
-        status: 500,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
       });
     }
   }

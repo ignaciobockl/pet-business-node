@@ -13,7 +13,7 @@ const handleUserSpecificErrors = (error: Error, res: Response): void => {
     statusCode = StatusCodes.BAD_REQUEST;
   }
 
-  res.status(statusCode).json({ error: errorMessage });
+  res.status(statusCode).json({ message: errorMessage });
 };
 
 export default handleUserSpecificErrors;

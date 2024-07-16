@@ -1,5 +1,6 @@
 import { UserRole as PrismaUserRole } from '@prisma/client';
 import { Server } from 'http';
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
 import app, { startServer } from '../../../../app.ts';
@@ -40,7 +41,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(201);
+      .expect(StatusCodes.CREATED);
 
     expect(response.body.data).toHaveProperty('id');
     expect(response.body.data.userName).toBe(userData.userName);
@@ -55,7 +56,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(400);
+      .expect(StatusCodes.BAD_REQUEST);
 
     expect(response.body.message).toMatch(/Missing required fields/);
   });
@@ -67,7 +68,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(400);
+      .expect(StatusCodes.BAD_REQUEST);
 
     expect(response.body.message).toMatch(/The entered email is invalid/);
   });
@@ -79,7 +80,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(400);
+      .expect(StatusCodes.BAD_REQUEST);
 
     expect(response.body.message).toMatch(
       /Username must be at least 6 characters long/
@@ -94,7 +95,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(400);
+      .expect(StatusCodes.BAD_REQUEST);
 
     expect(response.body.message).toMatch(/User with email .+ already exists/);
   });
@@ -106,7 +107,7 @@ describe('createUserController', () => {
     const response = await request(app)
       .post('/api/user')
       .send(userData)
-      .expect(400);
+      .expect(StatusCodes.BAD_REQUEST);
 
     expect(response.body.message).toMatch(
       /Cannot create a user with the administrator role/
