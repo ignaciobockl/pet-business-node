@@ -4,12 +4,21 @@ import logger from './utils/logger.ts';
 
 const prisma = new PrismaClient();
 
-export const testConnection = async (): Promise<void> => {
+export const connectDatabase = async (): Promise<void> => {
   try {
     await prisma.$connect();
-    logger.info('Conexión a PostgreSQL exitosa');
+    logger.info('Connection to PostgreSQL successful');
   } catch (error) {
-    logger.error('Error al conectar a PostgreSQL:', error);
+    logger.error('Error connecting to PostgreSQL:', error);
+  }
+};
+
+export const disconnectDatabase = async (): Promise<void> => {
+  try {
+    await prisma.$disconnect();
+    logger.info('PostgreSQL disconnection successful');
+  } catch (error) {
+    logger.error('Error disconnecting from PostgreSQL:', error);
   }
 };
 

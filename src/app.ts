@@ -1,26 +1,19 @@
 /// <reference path="./types/express.d.ts" />
 
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
+import { Server } from 'http';
 import morgan from 'morgan';
 
 import errorHandler from './middleware/errorHandler.ts';
-import { testConnection } from './prisma.ts';
+import { connectDatabase } from './prisma.ts';
 import userRoutes from './routes/userRoutes.ts';
 import handleProcessErrors from './utils/exceptionHandler.ts';
+import handleAppShutdown from './utils/handleAppShutdown.ts';
 import logger from './utils/logger.ts';
 
 const app = express();
-
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({
-    path: '.env.production',
-  });
-} else {
-  dotenv.config();
-}
 
 // Middlewares
 app.use(express.json());
@@ -51,12 +44,35 @@ app.use(errorHandler);
 // Handling unhandled errors and promise rejections
 handleProcessErrors();
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  if (process.env.NODE_ENV === 'production') {
-    logger.info(`Servidor corriendo en modo producción en el puerto ${PORT}`);
-  } else {
-    testConnection();
-    logger.debug(`Servidor corriendo en modo desarrollo en el puerto ${PORT}`);
+const PORT = Number(process.env.PORT) || 3000;
+
+export const startServer = async (port: number): Promise<Server> => {
+  try {
+    await connectDatabase();
+    const server = app.listen(port, () => {
+      const msg = `Server running in the environment ${process.env.NODE_ENV}, in the port ${port}`;
+      if (process.env.NODE_ENV === 'production') {
+        logger.info(msg);
+      } else if (process.env.NODE_ENV === 'test') {
+        logger.debug(msg);
+      } else {
+        logger.debug(msg);
+      }
+    });
+
+    handleAppShutdown(server);
+
+    return server;
+  } catch (error) {
+    logger.error('Failed to connect to database:', error);
+    throw error;
   }
-});
+};
+
+if (process.env.NODE_ENV !== 'test') {
+  startServer(PORT).catch((err) => {
+    logger.error('Server failed to start:', err);
+  });
+}
+
+export default app;

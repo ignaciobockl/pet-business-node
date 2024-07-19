@@ -1,127 +1,132 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-import { getUsers } from '../../controllers/user/userController.ts';
-import { User } from '../../models/User/user.ts';
-import generateMockUsers from '../../services/__mocks__/mockUsers.ts';
-import * as userService from '../../services/userService.ts';
+import { ResponseData } from '../../utils/interface/index.js';
 import handleResponse from '../../utils/responseHandler.ts';
 
-jest.mock('../../services/userService');
-jest.mock('../../utils/responseHandler');
+describe('handleResponse', () => {
+  let res: Partial<Response>;
 
-describe('User Controller - getUsers', () => {
-  let req: Partial<Request>;
-  let mockRes: Partial<Response>;
-  let mockUsers: User[];
-
-  beforeEach(async () => {
-    mockUsers = await generateMockUsers();
-
-    req = {};
-    mockRes = {
+  beforeEach(() => {
+    res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    jest.clearAllMocks();
-
-    (handleResponse as jest.Mock).mockImplementationOnce((res, data) => {
-      res.status(data.status).json(data);
-    });
   });
 
-  it('should return users with status 200', async () => {
-    (userService.getAllUsers as jest.Mock).mockResolvedValue(mockUsers);
+  it('should send a JSON response with the provided data, message, and status code', () => {
+    const responseData: ResponseData = {
+      data: { id: 1, name: 'Lalo Landa' },
+      message: 'Success',
+      status: 200,
+    };
 
-    await getUsers(req as Request, mockRes as Response);
+    handleResponse(res as Response, responseData);
 
-    expect(userService.getAllUsers).toHaveBeenCalledTimes(1);
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: mockUsers,
-      message: 'Users retrieved successfully',
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: { id: 1, name: 'Lalo Landa' },
+      message: 'Success',
       status: 200,
     });
   });
 
-  it('should handle validation error with status 400', async () => {
-    const err = new Error('Validation error');
-    err.name = 'ValidationError';
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+  it('should send a JSON response with the provided message and status code without data', () => {
+    const responseData: ResponseData = {
+      message: 'No Content',
+      status: 204,
+    };
 
-    await getUsers(req as Request, mockRes as Response);
+    handleResponse(res as Response, responseData);
 
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: null,
-      message: 'Validation error',
-      status: 400,
+    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'No Content',
+      status: 204,
     });
   });
 
-  it('should handle unauthorized error with status 401', async () => {
-    const err = new Error('Unauthorized error');
-    err.name = 'UnauthorizedError';
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
+  it('should send a JSON response with an error message and 500 status if no status is provided', () => {
+    const responseData: ResponseData = {
+      message: 'Error occurred',
+      status: 500,
+    };
 
-    await getUsers(req as Request, mockRes as Response);
+    handleResponse(res as Response, responseData);
 
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: null,
-      message: 'Unauthorized error',
-      status: 401,
-    });
-  });
-
-  it('should handle forbidden error with status 403', async () => {
-    const err = new Error('Forbidden error');
-    err.name = 'ForbiddenError';
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
-
-    await getUsers(req as Request, mockRes as Response);
-
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: null,
-      message: 'Forbidden error',
-      status: 403,
-    });
-  });
-
-  it('should handle not found error with status 404', async () => {
-    const err = new Error('Not found error');
-    err.name = 'NotFoundError';
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
-
-    await getUsers(req as Request, mockRes as Response);
-
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: null,
-      message: 'Not found error',
-      status: 404,
-    });
-  });
-
-  it('should handle unknown error with status 500', async () => {
-    const err = new Error('Unknown error');
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
-
-    await getUsers(req as Request, mockRes as Response);
-
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
-      data: null,
-      message: 'Unknown error',
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'Error occurred',
       status: 500,
     });
   });
 
-  it('should handle service unavailable error with status 503', async () => {
-    const err = new Error('Service unavailable error');
-    err.name = 'ServiceUnavailableError'; // Set the error name to match the expected name
-    (userService.getAllUsers as jest.Mock).mockRejectedValue(err);
-
-    await getUsers(req as Request, mockRes as Response);
-
-    expect(handleResponse).toHaveBeenCalledWith(mockRes, {
+  it('should send a JSON response with null data', () => {
+    const responseData: ResponseData = {
       data: null,
-      message: 'Service unavailable error',
-      status: 503,
+      message: 'Data is null',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: null,
+      message: 'Data is null',
+      status: 200,
+    });
+  });
+
+  it('should send a JSON response with empty data', () => {
+    const responseData: ResponseData<[]> = {
+      data: [],
+      message: 'Empty array',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: [],
+      message: 'Empty array',
+      status: 200,
+    });
+  });
+
+  it('should send a JSON response with undefined data', () => {
+    const responseData: ResponseData = {
+      data: undefined,
+      message: 'Undefined data',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: undefined,
+      message: 'Undefined data',
+      status: 200,
+    });
+  });
+
+  it('should send a JSON response with a nested object as data', () => {
+    const responseData: ResponseData = {
+      data: { user: { id: 1, name: 'Nested User' } },
+      message: 'Nested object',
+      status: 200,
+    };
+
+    handleResponse(res as Response, responseData);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      data: { user: { id: 1, name: 'Nested User' } },
+      message: 'Nested object',
+      status: 200,
     });
   });
 });

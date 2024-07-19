@@ -8,3 +8,8 @@ export interface ResponseData<T = unknown> {
   message: string;
   status: number;
 }
+
+export interface ValidationError extends Error {
+  details?: unknown;
+  missingFields?: string[];
+}

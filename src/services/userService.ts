@@ -1,15 +1,96 @@
+import { UserRole as PrismaUserRole } from '@prisma/client';
+import dayjs from 'dayjs';
+import { v4 as uuidv4, validate as isUUID } from 'uuid';
+import { ZodError } from 'zod';
+
+import { CreateUserDto } from '../models/types/user.js';
 import { User, UserResponse } from '../models/User/user.ts';
 import prisma from '../prisma.ts';
-import { UserSchema } from '../schemas/userSchema.ts';
+import { CreateUserSchema, UserSchema } from '../schemas/userSchema.ts';
+import { encryptPassword } from '../utils/encryption.ts';
 import createValidationError from '../utils/errors.ts';
 import logger from '../utils/logger.ts';
-// import { CreateUserDto } from '../models/types/user.js';
-// import { encryptPassword } from '../utils/encryption.ts';
-// import { UserRole as PrismaUserRole } from '@prisma/client';
 
-// ! temporalmente se utiliza este disable
-// eslint-disable-next-line import/prefer-default-export
-export const getAllUsers = async (): Promise<UserResponse[]> => {
+// eslint-disable-next-line complexity
+const createUserService = async (
+  userData: CreateUserDto
+): Promise<UserResponse> => {
+  // const encryptedPassword = await encryptPassword(userData.password);
+
+  try {
+    try {
+      // Validate user data using Zod
+      CreateUserSchema.parse(userData);
+    } catch (validationError) {
+      let errorMessage = 'Validation error creating user';
+      if (validationError instanceof ZodError) {
+        const issues = validationError.issues
+          .map((issue) => issue.message)
+          .join(', ');
+        errorMessage = `Validation error creating user: ${issues}`;
+      }
+      logger.error(errorMessage, { validationError });
+      throw createValidationError(errorMessage, validationError);
+    }
+
+    if (userData.role === PrismaUserRole.ADMIN) {
+      const errorMessage = 'Cannot create a user with the administrator role';
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        mail: userData.mail,
+      },
+    });
+
+    if (existingUser) {
+      const errorMessage = `User with email ${userData.mail} already exists`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const hashedPassword = await encryptPassword(userData.password);
+
+    try {
+      const user = await prisma.user.create({
+        data: {
+          id: uuidv4(),
+          userName: userData.userName,
+          password: hashedPassword,
+          mail: userData.mail,
+          role: userData.role,
+          createdAt: new Date(dayjs().toISOString()),
+          updatedAt: null,
+        },
+        select: {
+          id: true,
+          userName: true,
+          mail: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      logger.info('User created successfully', { user });
+      return user;
+    } catch (error) {
+      const errorMessage = 'Error creating user';
+      logger.error(errorMessage, { error });
+      throw error;
+    }
+  } catch (error) {
+    const errorMessage = `Error in createUser: ${error instanceof Error ? error.message : 'An error occurred'}`;
+    logger.error(errorMessage, { error });
+    if (error instanceof Error && error.name === 'ValidationError') {
+      throw error;
+    }
+    throw new Error(errorMessage);
+  }
+};
+
+const getAllUsersService = async (): Promise<UserResponse[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
 
@@ -43,28 +124,62 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
   }
 };
 
-// TODO: en proceso
-// export const createUser = async (userData: CreateUserDto): Promise<User> => {
-//   const encryptedPassword = await encryptPassword(userData.password);
+// eslint-disable-next-line complexity
+const getUserByIdService = async (id: string): Promise<UserResponse | null> => {
+  try {
+    if (!id || !isUUID(id)) {
+      const errorMessage = 'Invalid user ID';
+      logger.error(errorMessage);
+      const error = new Error(errorMessage);
+      error.name = 'InvalidUserIDError';
+      throw error;
+    }
 
-//   if (userData.role === PrismaUserRole.ADMIN)
-//     throw new Error('Cannot create a user with the administrator role');
+    const user: UserResponse | null = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        userName: true,
+        role: true,
+        mail: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
 
-//   // TODO: verificar que el email no se encuentre registrado
+    if (!user) {
+      const errorMessage = `User with id ${id} not found`;
+      logger.error(errorMessage);
+      const error = new Error(errorMessage);
+      error.name = 'UserNotFoundError';
+      return null;
+    }
 
-//   try {
-//     const user = await prisma.user.create({
-//       data: {
-//         ...userData,
-//         password: encryptedPassword,
-//         oldPassword: null,
-//       },
-//     });
-//     return user;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    logger.info(`User with id ${id} retrieved successfully`);
+    return user;
+  } catch (error) {
+    const typedError = error as Error;
+    const errorMessage = typedError.message;
+    if (
+      typedError.name === 'InvalidUserIDError' ||
+      typedError.name === 'UserNotFoundError'
+    ) {
+      logger.error(`Error retrieving user with ID ${id}: ${errorMessage}`);
+      throw error;
+    } else if (
+      errorMessage.includes('Internal Server Error') ||
+      errorMessage.includes('DataBase Error')
+    ) {
+      logger.error(`Database error: ${errorMessage}`);
+      throw new Error('Internal Server Error');
+    } else {
+      logger.error(`Error retrieving user with ID ${id}: ${errorMessage}`);
+      throw new Error('Error retrieving user');
+    }
+  }
+};
 
 // TODO: login
 // export const loginUser = async (userName: string, password: string): Promise<User | null> => {
@@ -86,3 +201,5 @@ export const getAllUsers = async (): Promise<UserResponse[]> => {
 
 //   return user;
 // };
+
+export { createUserService, getAllUsersService, getUserByIdService };
